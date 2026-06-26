@@ -4,6 +4,7 @@ const SettingsPage = {
       activeSection: null,
       isDark: document.documentElement.getAttribute('data-theme') === 'dark',
       selectedColor: localStorage.getItem('app-color') || 'default',
+      selectedDesign: localStorage.getItem('app-design') || 'classic',
       profile: {
         name: 'أحمد الجبوري',
         email: 'ahmed@example.com',
@@ -29,7 +30,7 @@ const SettingsPage = {
       openSupport: null,
       themes: [
         { id: 'default', label: 'أساسي', swatch: '#1e5ba3' },
-        { id: 'pink', label: 'وردي', swatch: '#d63384' },
+        { id: 'pink', label: 'وردي', swatch: '#e91e63' },
         { id: 'purple', label: 'بنفسجي', swatch: '#7c3aed' },
         { id: 'super', label: 'سوبر', swatch: '#6366f1' },
         { id: 'ocean', label: 'أوقيانوسي', swatch: '#0d9488' }
