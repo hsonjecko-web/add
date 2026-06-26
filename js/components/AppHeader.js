@@ -13,13 +13,23 @@ const AppHeader = {
   template: `
     <header class="app-header">
       <div class="header-top">
-        <!-- يمين الهيدر: اسم المنصة -->
         <div class="header-right">
-          <h1 class="app-title">منصة عراق تكنو</h1>
-          <p class="app-subtitle">التعليمية</p>
+          <button class="header-icon-btn" aria-label="التعليم">
+            <svg class="education-icon" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+              <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+              <path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none" stroke="currentColor"/>
+            </svg>
+          </button>
         </div>
 
-        <!-- يسار الهيدر: زر الاشعارات + زر تغيير المود -->
+        <div class="header-center">
+          <div class="text-center">
+            <h1 class="app-title">منصة عراق تكنو</h1>
+            <p class="app-subtitle">التعليمية</p>
+          </div>
+        </div>
+
         <div class="header-left">
           <div class="notification-btn">
             <svg class="notification-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +48,6 @@ const AppHeader = {
           </button>
         </div>
       </div>
-      
     </header>
   `
 };
