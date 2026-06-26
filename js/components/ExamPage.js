@@ -204,6 +204,9 @@ const ExamPage = {
         console.warn('Audio not supported', error);
       }
     },
+    brandColor() {
+      return getComputedStyle(document.documentElement).getPropertyValue('--brand-blue').trim() || '#1e5ba3';
+    },
     selectSubject(subjectId) {
       this.selectedSubjectId = subjectId;
       this.selectedChapterId = null;
@@ -284,6 +287,28 @@ const ExamPage = {
       const key = `${this.selectedSubject.id}:${this.selectedChapter.id}`;
       this.lockedExams[key] = Date.now() + this.cooldownSeconds * 1000;
       this.stopTimer();
+
+      const examRecord = {
+        id: Date.now(),
+        subjectName: this.selectedSubject.name,
+        chapterName: this.selectedChapter.title,
+        score: this.score,
+        correctCount: correctAnswers,
+        totalQuestions: questions.length,
+        date: this.examFinishedAt,
+        timeExpired: forceTimeOut,
+        review: review.map(r => ({
+          text: r.text,
+          options: r.options,
+          correct: r.correct,
+          chosenAnswer: r.chosenAnswer,
+          isCorrect: r.isCorrect,
+          explanation: r.explanation
+        }))
+      };
+      const history = JSON.parse(localStorage.getItem('examHistory') || '[]');
+      history.unshift(examRecord);
+      localStorage.setItem('examHistory', JSON.stringify(history));
     },
     getResultText() {
       if (this.score >= 80) return 'ممتاز جدًا';
@@ -312,6 +337,21 @@ const ExamPage = {
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
       return `${mins}:${secs.toString().padStart(2, '0')}`;
+    },
+    getChapterGradient(index) {
+      const palettes = [
+        'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+        'linear-gradient(135deg, #60a5fa, #3b82f6)',
+        'linear-gradient(135deg, #10b981, #059669)',
+        'linear-gradient(135deg, #34d399, #10b981)',
+        'linear-gradient(135deg, #f59e0b, #d97706)',
+        'linear-gradient(135deg, #fbbf24, #f59e0b)',
+        'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+        'linear-gradient(135deg, #a78bfa, #8b5cf6)',
+        'linear-gradient(135deg, #ec4899, #db2777)',
+        'linear-gradient(135deg, #f472b6, #ec4899)',
+      ];
+      return palettes[index % palettes.length];
     }
   },
   template: `
@@ -328,7 +368,7 @@ const ExamPage = {
           <p>5 أسئلة لكل اختبار • مؤقت واضح • نتائج فورية</p>
         </div>
         <div class="timer-ring-wrap">
-          <div class="timer-ring" :style="{ background: 'conic-gradient(#2563eb ' + timerPercent + '%, rgba(255,255,255,0.2) 0)' }">
+          <div class="timer-ring" :style="{ background: 'conic-gradient(' + brandColor() + ' ' + timerPercent + '%, rgba(255,255,255,0.2) 0)' }">
             <div class="timer-ring-inner">
               <strong>{{ currentStep === 'quiz' ? formatTimeRemaining() : '03:00' }}</strong>
               <small>{{ currentStep === 'quiz' ? 'الوقت المتبقي' : 'المدة' }}</small>
@@ -362,13 +402,13 @@ const ExamPage = {
 
           <div v-if="!selectedChapterId" class="chapter-selector-grid">
             <button
-              v-for="chapter in selectedSubject.chapters"
+              v-for="(chapter, index) in selectedSubject.chapters"
               :key="chapter.id"
               class="chapter-choice-card"
-              :class="selectedChapterId === chapter.id ? 'chapter-choice-card-active' : ''"
-              :style="selectedChapterId === chapter.id ? { background: selectedSubject.color, color: '#fff' } : {}"
+              :style="{ background: getChapterGradient(index) }"
               @click="selectChapter(chapter.id)"
             >
+              <span class="chapter-icon">{{ index + 1 }}</span>
               <span>{{ chapter.title }}</span>
             </button>
           </div>
@@ -393,11 +433,22 @@ const ExamPage = {
           <div class="exam-progress-bar">
             <div :style="{ width: progressPercent + '%' }"></div>
           </div>
-          <span>{{ currentQuestionIndex + 1 }} / {{ totalQuestions }}</span>
+          <div class="progress-info">
+            <span class="progress-text">السؤال {{ currentQuestionIndex + 1 }} من {{ totalQuestions }}</span>
+            <span class="progress-pill">{{ currentQuestionIndex + 1 }}/{{ totalQuestions }}</span>
+          </div>
         </div>
 
         <div class="exam-question-shell">
-          <div class="question-badge">سؤال {{ currentQuestionIndex + 1 }}</div>
+          <div class="question-header">
+            <div class="question-badge">سؤال {{ currentQuestionIndex + 1 }}</div>
+            <div class="question-dots">
+              <span v-for="i in totalQuestions" :key="i"
+                class="q-dot"
+                :class="i <= currentQuestionIndex ? 'q-dot-done' : (i === currentQuestionIndex + 1 ? 'q-dot-active' : '')"
+              ></span>
+            </div>
+          </div>
           <h3>{{ currentQuestion.text }}</h3>
           <div class="exam-options">
             <button
@@ -407,16 +458,26 @@ const ExamPage = {
               :class="answers[currentQuestionIndex] === option ? 'exam-option-selected' : ''"
               @click="chooseAnswer(option)"
             >
-              <span class="option-index">{{ index + 1 }}</span>
-              <span>{{ option }}</span>
+              <span class="option-radio" :class="answers[currentQuestionIndex] === option ? 'option-radio-checked' : ''"></span>
+              <span class="option-letter">{{ ['أ', 'ب', 'ج', 'د'][index] }}</span>
+              <span class="option-text">{{ option }}</span>
             </button>
           </div>
         </div>
 
         <div class="exam-actions">
-          <button class="exam-btn secondary" @click="prevQuestion" :disabled="currentQuestionIndex === 0">السابق</button>
-          <button v-if="currentQuestionIndex < totalQuestions - 1" class="exam-btn primary" @click="nextQuestion">التالي</button>
-          <button v-else class="exam-btn primary" @click="finishExam">إنهاء الاختبار</button>
+          <button class="exam-btn secondary" @click="prevQuestion" :disabled="currentQuestionIndex === 0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            السابق
+          </button>
+          <button v-if="currentQuestionIndex < totalQuestions - 1" class="exam-btn primary" @click="nextQuestion">
+            التالي
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+          <button v-else class="exam-btn primary" @click="finishExam">
+            إنهاء الاختبار
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </div>
 
@@ -442,19 +503,36 @@ const ExamPage = {
         <h3>{{ getResultText() }}</h3>
         <p>{{ completionMessage }}</p>
         <div class="result-meta">
-          <span>بداية الاختبار: {{ formatClock(examStartedAt) }}</span>
-          <span>انتهاء الاختبار: {{ formatClock(examFinishedAt) }}</span>
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>البداية: {{ formatClock(examStartedAt) }}</span>
+          </div>
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>النهاية: {{ formatClock(examFinishedAt) }}</span>
+          </div>
         </div>
 
         <div class="review-list">
-          <div v-for="(item, index) in review" :key="index" class="review-item">
+          <div v-for="(item, index) in review" :key="index" class="review-item" :class="item.isCorrect ? 'review-item-correct' : 'review-item-wrong'">
             <div class="review-item-top">
-              <span class="review-status" :class="item.isCorrect ? 'review-status-correct' : 'review-status-wrong'">{{ item.isCorrect ? 'صح' : 'خطأ' }}</span>
-              <p class="review-question">{{ index + 1 }}. {{ item.text }}</p>
+              <div class="review-status-icon" :class="item.isCorrect ? 'status-correct' : 'status-wrong'">
+                <svg v-if="item.isCorrect" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div class="review-content">
+                <p class="review-question">{{ index + 1 }}. {{ item.text }}</p>
+                <div class="review-answers">
+                  <span class="review-answer-label">إجابتك:</span>
+                  <span class="review-answer-val" :class="item.isCorrect ? 'answer-correct' : 'answer-wrong'">{{ item.chosenAnswer }}</span>
+                </div>
+                <div v-if="!item.isCorrect" class="review-answers">
+                  <span class="review-answer-label">الصحيحة:</span>
+                  <span class="review-answer-val answer-correct">{{ item.correct }}</span>
+                </div>
+                <p v-if="!item.isCorrect" class="review-explanation">{{ item.explanation }}</p>
+              </div>
             </div>
-            <p class="review-answer">إجابتك: <strong>{{ item.chosenAnswer }}</strong></p>
-            <p class="review-correct">الإجابة الصحيحة: <strong>{{ item.correct }}</strong></p>
-            <p v-if="!item.isCorrect" class="review-explanation">{{ item.explanation }}</p>
           </div>
         </div>
 

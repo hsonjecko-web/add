@@ -17,6 +17,14 @@ const AppFooter = {
     goExam() {
       this.activeTab = 'questions';
       this.$emit('show-exam');
+    },
+    goMyExams() {
+      this.activeTab = 'myexams';
+      this.$emit('show-myexams');
+    },
+    goSettings() {
+      this.activeTab = 'settings';
+      this.$emit('show-settings');
     }
   },
   template: `
@@ -46,17 +54,15 @@ const AppFooter = {
         </svg>
         <span>اختبار</span>
       </button>
-      <button class="nav-item nav-tools" :class="activeTab === 'tools' ? 'nav-active' : 'nav-inactive'" @click="activeTab = 'tools'">
+      <button class="nav-item nav-myexams" :class="activeTab === 'myexams' ? 'nav-active' : 'nav-inactive'" @click="goMyExams">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v4"/>
-          <path d="M8 7h8"/>
-          <path d="M7 11h10"/>
-          <path d="M8 15h8"/>
-          <path d="M9 19h6"/>
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 14l2 2 4-4"/>
         </svg>
-        <span>الأدوات</span>
+        <span>اختباراتي</span>
       </button>
-      <button class="nav-item nav-settings" :class="activeTab === 'settings' ? 'nav-active' : 'nav-inactive'" @click="activeTab = 'settings'">
+      <button class="nav-item nav-settings" :class="activeTab === 'settings' ? 'nav-active' : 'nav-inactive'" @click="goSettings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3.5"/>
           <path d="M19 12a7 7 0 0 0-.1-1.1l2-1.5-2-3.4-2.4 1a7 7 0 0 0-1.9-1.1L14 3h-4l-.6 2.4a7 7 0 0 0-1.9 1.1l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12a7 7 0 0 0 .1 1.1l-2 1.5 2 3.4 2.4-1a7 7 0 0 0 1.9 1.1L10 21h4l.6-2.4a7 7 0 0 0 1.9-1.1l2.4 1 2-3.4-2-1.5c.1-.3.1-.7.1-1.1Z"/>

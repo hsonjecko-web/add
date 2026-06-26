@@ -1,13 +1,14 @@
 const AppHeader = {
   data() {
     return {
-      isDark: false
+      isDark: (document.documentElement.getAttribute('data-theme') || localStorage.getItem('app-theme') || 'light') === 'dark'
     };
   },
   methods: {
     toggleDark() {
       this.isDark = !this.isDark;
       document.documentElement.setAttribute('data-theme', this.isDark ? 'dark' : 'light');
+      localStorage.setItem('app-theme', this.isDark ? 'dark' : 'light');
     }
   },
   template: `
