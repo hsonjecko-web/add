@@ -20,7 +20,17 @@ const AppHeader = {
         </div>
 
         <div class="header-center">
-          <img class="header-hero-image" src="10-logo.png" alt="شعار المنصة" />
+          <div class="header-logo-mark" aria-label="شعار المنصة">
+            <div class="logo-ring"></div>
+            <div class="logo-core">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3 4 7l8 4 8-4-8-4Z"/>
+                <path d="m4 10 8 4 8-4"/>
+                <path d="m4 13 8 4 8-4"/>
+                <path d="M7 15.5v3"/>
+              </svg>
+            </div>
+          </div>
         </div>
 
         <!-- يسار الهيدر: زر الاشعارات + زر تغيير المود -->
