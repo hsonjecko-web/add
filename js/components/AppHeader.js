@@ -19,6 +19,10 @@ const AppHeader = {
           <p class="app-subtitle">التعليمية</p>
         </div>
 
+        <div class="header-center">
+          <img class="header-hero-image" src="10-logo.png" alt="شعار المنصة" />
+        </div>
+
         <!-- يسار الهيدر: زر الاشعارات + زر تغيير المود -->
         <div class="header-left">
           <div class="notification-btn">
@@ -38,16 +42,7 @@ const AppHeader = {
           </button>
         </div>
       </div>
-      <div class="search-container">
-        <div class="search-input-wrapper">
-          <span class="search-icon">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-            </svg>
-          </span>
-          <input class="search-input" type="text" placeholder="بحث عن محاضرات، دروس، أساتذة..."/>
-        </div>
-      </div>
+      
     </header>
   `
 };
