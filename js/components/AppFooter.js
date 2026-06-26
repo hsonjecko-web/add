@@ -13,6 +13,10 @@ const AppFooter = {
     goSubjects() {
       this.activeTab = 'subjects';
       this.$emit('show-subjects');
+    },
+    goExam() {
+      this.activeTab = 'questions';
+      this.$emit('show-exam');
     }
   },
   template: `
@@ -34,13 +38,13 @@ const AppFooter = {
         </svg>
         <span>المواد</span>
       </button>
-      <button class="nav-item nav-questions" :class="activeTab === 'questions' ? 'nav-active' : 'nav-inactive'" @click="activeTab = 'questions'">
+      <button class="nav-item nav-questions" :class="activeTab === 'questions' ? 'nav-active' : 'nav-inactive'" @click="goExam">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 5.5a3.5 3.5 0 1 1 0 7"/>
           <path d="M8 13.5v1.5"/>
           <path d="M18 5v10a2 2 0 0 1-2 2H9l-3 3V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2Z"/>
         </svg>
-        <span>الأسئلة</span>
+        <span>اختبار</span>
       </button>
       <button class="nav-item nav-tools" :class="activeTab === 'tools' ? 'nav-active' : 'nav-inactive'" @click="activeTab = 'tools'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">

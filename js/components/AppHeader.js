@@ -19,22 +19,6 @@ const AppHeader = {
           <p class="app-subtitle">التعليمية</p>
         </div>
 
-        <div class="header-center">
-          <div class="header-logo-mark" aria-label="شعار المنصة">
-            <div class="logo-ring"></div>
-            <div class="logo-core">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/>
-                <path d="M15 6h2a2 2 0 0 1 2 2v10"/>
-                <path d="M9 8h3"/>
-                <path d="M9 12h2"/>
-                <path d="M9 16h1"/>
-                <path d="M16 8l2 2-2 2"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-
         <!-- يسار الهيدر: زر الاشعارات + زر تغيير المود -->
         <div class="header-left">
           <div class="notification-btn">
