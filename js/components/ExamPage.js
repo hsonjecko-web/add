@@ -5,8 +5,8 @@ const ExamPage = {
       lockUntil: null,
       currentStep: 'setup',
       currentQuestionIndex: 0,
-      selectedSubjectId: 'math',
-      selectedChapterId: 'chapter1',
+      selectedSubjectId: null,
+      selectedChapterId: null,
       answers: [],
       score: 0,
       review: [],
@@ -17,121 +17,90 @@ const ExamPage = {
       timerInterval: null,
       lastWarningSecond: null,
       examDurationSeconds: 180,
+      lockedExams: {},
       subjects: [
         {
           id: 'math',
           name: 'الرياضيات',
           color: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
           chapters: [
-            {
-              id: 'chapter1',
-              title: 'الفصل الأول: الأعداد والعمليات',
-              questions: [
-                { text: 'ما قيمة 7 + 8؟', options: ['13', '14', '15', '16'], correct: '15', explanation: '7 + 8 = 15.' },
-                { text: 'ما ناتج 12 ÷ 3؟', options: ['2', '3', '4', '5'], correct: '4', explanation: '12 ÷ 3 = 4.' },
-                { text: 'ما هو الرقم التالي في المتتابعة 2، 4، 6، 8، ؟', options: ['9', '10', '11', '12'], correct: '10', explanation: 'المتتابعة تزداد بمقدار 2.' },
-                { text: 'ما قيمة 5 × 6؟', options: ['25', '30', '35', '40'], correct: '30', explanation: '5 × 6 = 30.' },
-                { text: 'ما هو نصف العدد 20؟', options: ['5', '10', '15', '20'], correct: '10', explanation: 'نصف 20 يساوي 10.' }
-              ]
-            },
-            {
-              id: 'chapter2',
-              title: 'الفصل الثاني: المعادلات البسيطة',
-              questions: [
-                { text: 'إذا كانت x + 3 = 8، فما قيمة x؟', options: ['3', '5', '8', '11'], correct: '5', explanation: 'x = 8 - 3 = 5.' },
-                { text: 'إذا كانت 2x = 10، فما قيمة x؟', options: ['3', '4', '5', '6'], correct: '5', explanation: 'x = 10 ÷ 2 = 5.' },
-                { text: 'ما قيمة 4 + 2 × 3؟', options: ['10', '12', '14', '18'], correct: '10', explanation: 'أولًا الضرب ثم الجمع.' },
-                { text: 'ما قيمة 15 - 7؟', options: ['7', '8', '9', '10'], correct: '8', explanation: '15 - 7 = 8.' },
-                { text: 'إذا كانت x - 4 = 1، فما قيمة x؟', options: ['3', '4', '5', '6'], correct: '5', explanation: 'x = 1 + 4 = 5.' }
-              ]
-            }
+            { id: 'chapter1', title: 'الفصل الأول: الأعداد والعمليات', questions: [
+              { text: 'ما قيمة 7 + 8؟', options: ['13', '14', '15', '16'], correct: '15', explanation: '7 + 8 = 15.' },
+              { text: 'ما ناتج 12 ÷ 3؟', options: ['2', '3', '4', '5'], correct: '4', explanation: '12 ÷ 3 = 4.' },
+              { text: 'ما هو الرقم التالي في المتتابعة 2، 4، 6، 8، ؟', options: ['9', '10', '11', '12'], correct: '10', explanation: 'المتتابعة تزداد بمقدار 2.' },
+              { text: 'ما قيمة 5 × 6؟', options: ['25', '30', '35', '40'], correct: '30', explanation: '5 × 6 = 30.' },
+              { text: 'ما هو نصف العدد 20؟', options: ['5', '10', '15', '20'], correct: '10', explanation: 'نصف 20 يساوي 10.' }
+            ]},
+            { id: 'chapter2', title: 'الفصل الثاني: المعادلات البسيطة', questions: [
+              { text: 'إذا كانت x + 3 = 8، فما قيمة x؟', options: ['3', '5', '8', '11'], correct: '5', explanation: 'x = 8 - 3 = 5.' },
+              { text: 'إذا كانت 2x = 10، فما قيمة x؟', options: ['3', '4', '5', '6'], correct: '5', explanation: 'x = 10 ÷ 2 = 5.' },
+              { text: 'ما قيمة 4 + 2 × 3؟', options: ['10', '12', '14', '18'], correct: '10', explanation: 'أولًا الضرب ثم الجمع.' },
+              { text: 'ما قيمة 15 - 7؟', options: ['7', '8', '9', '10'], correct: '8', explanation: '15 - 7 = 8.' },
+              { text: 'إذا كانت x - 4 = 1، فما قيمة x؟', options: ['3', '4', '5', '6'], correct: '5', explanation: 'x = 1 + 4 = 5.' }
+            ]}
           ]
         },
         {
           id: 'science',
           name: 'العلوم',
-          color: 'linear-gradient(135deg, #0f766e 0%, #0f766e 100%)',
+          color: 'linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)',
           chapters: [
-            {
-              id: 'chapter1',
-              title: 'الفصل الأول: المادة والطاقة',
-              questions: [
-                { text: 'ما هي الحالة التي تكون فيها المادة على شكل سائل؟', options: ['الثلج', 'الماء', 'البخار', 'الهواء'], correct: 'الماء', explanation: 'الماء مثال على المادة في الحالة السائلة.' },
-                { text: 'ما هو مصدر الضوء الطبيعي؟', options: ['المصباح', 'الشمس', 'الشمعة', 'الهواء'], correct: 'الشمس', explanation: 'الشمس هي مصدر الضوء الطبيعي الرئيسي.' },
-                { text: 'ما الذي يجعل الأشياء تسقط نحو الأرض؟', options: ['الحرارة', 'الجاذبية', 'الضغط', 'الضوء'], correct: 'الجاذبية', explanation: 'الجاذبية هي القوة التي تسحب الأجسام نحو الأرض.' },
-                { text: 'ما هي المادة التي تتبخر بسرعة؟', options: ['الثلج', 'الماء', 'البخار', 'الحديد'], correct: 'البخار', explanation: 'البخار هو الماء في حالة غازية.' },
-                { text: 'ما هي الطاقة التي تنتج من الشمس؟', options: ['طاقة حرارية', 'طاقة صوتية', 'طاقة كهربائية', 'طاقة كيميائية'], correct: 'طاقة حرارية', explanation: 'الشمس تعطينا طاقة حرارية وضوئية.' }
-              ]
-            },
-            {
-              id: 'chapter2',
-              title: 'الفصل الثاني: الكائنات الحية',
-              questions: [
-                { text: 'ما الذي تحتاجه النباتات لتصنع غذائها؟', options: ['الرماد', 'الماء والضوء', 'الحديد', 'الثلج'], correct: 'الماء والضوء', explanation: 'النباتات تحتاج الماء والضوء لإجراء البناء الضوئي.' },
-                { text: 'ما هي الوظيفة الأساسية للجذور؟', options: ['التنفس', 'امتصاص الماء', 'التكاثر', 'التحرك'], correct: 'امتصاص الماء', explanation: 'الجذور تمتص الماء والعناصر الغذائية من التربة.' },
-                { text: 'أي كائن حي يستطيع الحركة بنفسه؟', options: ['الحجر', 'الورقة', 'الحيوان', 'الصخر'], correct: 'الحيوان', explanation: 'الحيوانات تتحرك وتستجيب للبيئة.' },
-                { text: 'ما هي الوحدة الأساسية للحياة؟', options: ['الخلية', 'النسيج', 'العضو', 'الجهاز'], correct: 'الخلية', explanation: 'الخلية هي الوحدة الأساسية لجميع الكائنات الحية.' },
-                { text: 'ما الذي يحتاجه الإنسان للتنفس؟', options: ['الماء فقط', 'الأكسجين', 'الملح', 'السكر'], correct: 'الأكسجين', explanation: 'الإنسان يحتاج الأكسجين للتنفس.' }
-              ]
-            }
+            { id: 'chapter1', title: 'الفصل الأول: المادة والطاقة', questions: [
+              { text: 'ما هي الحالة التي تكون فيها المادة على شكل سائل؟', options: ['الثلج', 'الماء', 'البخار', 'الهواء'], correct: 'الماء', explanation: 'الماء مثال على المادة في الحالة السائلة.' },
+              { text: 'ما هو مصدر الضوء الطبيعي؟', options: ['المصباح', 'الشمس', 'الشمعة', 'الهواء'], correct: 'الشمس', explanation: 'الشمس هي مصدر الضوء الطبيعي الرئيسي.' },
+              { text: 'ما الذي يجعل الأشياء تسقط نحو الأرض؟', options: ['الحرارة', 'الجاذبية', 'الضغط', 'الضوء'], correct: 'الجاذبية', explanation: 'الجاذبية هي القوة التي تسحب الأجسام نحو الأرض.' },
+              { text: 'ما هي المادة التي تتبخر بسرعة؟', options: ['الثلج', 'الماء', 'البخار', 'الحديد'], correct: 'البخار', explanation: 'البخار هو الماء في حالة غازية.' },
+              { text: 'ما هي الطاقة التي تنتج من الشمس؟', options: ['طاقة حرارية', 'طاقة صوتية', 'طاقة كهربائية', 'طاقة كيميائية'], correct: 'طاقة حرارية', explanation: 'الشمس تعطينا طاقة حرارية وضوئية.' }
+            ]},
+            { id: 'chapter2', title: 'الفصل الثاني: الكائنات الحية', questions: [
+              { text: 'ما الذي تحتاجه النباتات لتصنع غذائها؟', options: ['الرماد', 'الماء والضوء', 'الحديد', 'الثلج'], correct: 'الماء والضوء', explanation: 'النباتات تحتاج الماء والضوء لإجراء البناء الضوئي.' },
+              { text: 'ما هي الوظيفة الأساسية للجذور؟', options: ['التنفس', 'امتصاص الماء', 'التكاثر', 'التحرك'], correct: 'امتصاص الماء', explanation: 'الجذور تمتص الماء والعناصر الغذائية من التربة.' },
+              { text: 'أي كائن حي يستطيع الحركة بنفسه؟', options: ['الحجر', 'الورقة', 'الحيوان', 'الصخر'], correct: 'الحيوان', explanation: 'الحيوانات تتحرك وتستجيب للبيئة.' },
+              { text: 'ما هي الوحدة الأساسية للحياة؟', options: ['الخلية', 'النسيج', 'العضو', 'الجهاز'], correct: 'الخلية', explanation: 'الخلية هي الوحدة الأساسية لجميع الكائنات الحية.' },
+              { text: 'ما الذي يحتاجه الإنسان للتنفس؟', options: ['الماء فقط', 'الأكسجين', 'الملح', 'السكر'], correct: 'الأكسجين', explanation: 'الإنسان يحتاج الأكسجين للتنفس.' }
+            ]}
           ]
         },
         {
           id: 'arabic',
           name: 'اللغة العربية',
-          color: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+          color: 'linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%)',
           chapters: [
-            {
-              id: 'chapter1',
-              title: 'الفصل الأول: القواعد',
-              questions: [
-                { text: 'ما اسم الفعل في الجملة: "الطالب يقرأ"؟', options: ['الطالب', 'يقرأ', 'في', 'الكتاب'], correct: 'يقرأ', explanation: 'الفعل هو الكلمة التي تدل على الحدث.' },
-                { text: 'ما نوع الكلمة "كتاب"؟', options: ['فعل', 'اسم', 'حرف', 'ظرف'], correct: 'اسم', explanation: 'الكتاب اسم يدل على شيء معين.' },
-                { text: 'ما الحرف الذي يربط كلمتين؟', options: ['الاسم', 'الفعل', 'الحرف', 'العدد'], correct: 'الحرف', explanation: 'الحرف يربط الكلمات في الجملة.' },
-                { text: 'ما جمع كلمة "طالب"؟', options: ['طالبات', 'طلاب', 'طالبون', 'طالبين'], correct: 'طلاب', explanation: 'جمع كلمة طالب هو طلاب.' },
-                { text: 'ما نوع الجملة: "الجو جميل"؟', options: ['سؤال', 'أمر', 'خبر', 'تعجب'], correct: 'خبر', explanation: 'الجملة هنا تخبرنا بحقيقة.' }
-              ]
-            },
-            {
-              id: 'chapter2',
-              title: 'الفصل الثاني: البلاغة',
-              questions: [
-                { text: 'ما هو التشبيه في: "الولد كالبرق"؟', options: ['الولد', 'البرق', 'كالبرق', 'لا شيء'], correct: 'كالبرق', explanation: 'التشبيه يستخدم أداة تشبيه مثل الكاف.' },
-                { text: 'ما هو المقصود بالاستفهام؟', options: ['طلب الفهم', 'طلب السلوك', 'طلب العطاء', 'طلب النوم'], correct: 'طلب الفهم', explanation: 'الاستفهام هو طلب المعرفة أو الفهم.' },
-                { text: 'ما معنى الكلمة "أمل"؟', options: ['قلق', 'رجاء', 'حزن', 'غضب'], correct: 'رجاء', explanation: 'الأمل يعني الرجاء والتوقع.' },
-                { text: 'ما هو جمع كلمة "كتاب"؟', options: ['كتب', 'كتابات', 'كتبون', 'كتبنا'], correct: 'كتب', explanation: 'جمع كلمة كتاب هو كتب.' },
-                { text: 'ما نوع الجملة: "هل تدرس"؟', options: ['خبر', 'سؤال', 'أمر', 'نداء'], correct: 'سؤال', explanation: 'الجملة هنا تطرح سؤالاً.' }
-              ]
-            }
+            { id: 'chapter1', title: 'الفصل الأول: القواعد', questions: [
+              { text: 'ما اسم الفعل في الجملة: "الطالب يقرأ"؟', options: ['الطالب', 'يقرأ', 'في', 'الكتاب'], correct: 'يقرأ', explanation: 'الفعل هو الكلمة التي تدل على الحدث.' },
+              { text: 'ما نوع الكلمة "كتاب"؟', options: ['فعل', 'اسم', 'حرف', 'ظرف'], correct: 'اسم', explanation: 'الكتاب اسم يدل على شيء معين.' },
+              { text: 'ما الحرف الذي يربط كلمتين؟', options: ['الاسم', 'الفعل', 'الحرف', 'العدد'], correct: 'الحرف', explanation: 'الحرف يربط الكلمات في الجملة.' },
+              { text: 'ما جمع كلمة "طالب"؟', options: ['طالبات', 'طلاب', 'طالبون', 'طالبين'], correct: 'طلاب', explanation: 'جمع كلمة طالب هو طلاب.' },
+              { text: 'ما نوع الجملة: "الجو جميل"؟', options: ['سؤال', 'أمر', 'خبر', 'تعجب'], correct: 'خبر', explanation: 'الجملة هنا تخبرنا بحقيقة.' }
+            ]},
+            { id: 'chapter2', title: 'الفصل الثاني: البلاغة', questions: [
+              { text: 'ما هو التشبيه في: "الولد كالبرق"؟', options: ['الولد', 'البرق', 'كالبرق', 'لا شيء'], correct: 'كالبرق', explanation: 'التشبيه يستخدم أداة تشبيه مثل الكاف.' },
+              { text: 'ما هو المقصود بالاستفهام؟', options: ['طلب الفهم', 'طلب السلوك', 'طلب العطاء', 'طلب النوم'], correct: 'طلب الفهم', explanation: 'الاستفهام هو طلب المعرفة أو الفهم.' },
+              { text: 'ما معنى الكلمة "أمل"؟', options: ['قلق', 'رجاء', 'حزن', 'غضب'], correct: 'رجاء', explanation: 'الأمل يعني الرجاء والتوقع.' },
+              { text: 'ما هو جمع كلمة "كتاب"؟', options: ['كتب', 'كتابات', 'كتبون', 'كتبنا'], correct: 'كتب', explanation: 'جمع كلمة كتاب هو كتب.' },
+              { text: 'ما نوع الجملة: "هل تدرس"؟', options: ['خبر', 'سؤال', 'أمر', 'نداء'], correct: 'سؤال', explanation: 'الجملة هنا تطرح سؤالاً.' }
+            ]}
           ]
         },
         {
           id: 'computer',
           name: 'الحاسوب',
-          color: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
+          color: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
           chapters: [
-            {
-              id: 'chapter1',
-              title: 'الفصل الأول: أساسيات الحاسوب',
-              questions: [
-                { text: 'ما هي أداة إدخال البيانات؟', options: ['المعالج', 'الماوس', 'الشاشة', 'الطابعة'], correct: 'الماوس', explanation: 'الماوس هو جهاز إدخال.' },
-                { text: 'ما هي وحدة المعالجة المركزية؟', options: ['CPU', 'RAM', 'ROM', 'SSD'], correct: 'CPU', explanation: 'CPU هي وحدة المعالجة المركزية.' },
-                { text: 'ما هي الذاكرة المؤقتة؟', options: ['ROM', 'SSD', 'RAM', 'HD'], correct: 'RAM', explanation: 'RAM هي الذاكرة المؤقتة التي يعمل بها النظام.' },
-                { text: 'ما الذي يُستخدم لحفظ البيانات بشكل دائم؟', options: ['الذاكرة المؤقتة', 'القرص الصلب', 'المعالج', 'الشاشة'], correct: 'القرص الصلب', explanation: 'القرص الصلب يستخدم لحفظ البيانات بشكل دائم.' },
-                { text: 'ما هي شاشة العرض؟', options: ['جهاز إدخال', 'جهاز إخراج', 'جهاز تخزين', 'جهاز معالجة'], correct: 'جهاز إخراج', explanation: 'الشاشة تعرض المعلومات للمستخدم.' }
-              ]
-            },
-            {
-              id: 'chapter2',
-              title: 'الفصل الثاني: الإنترنت والأمان',
-              questions: [
-                { text: 'ما هو المتصفح؟', options: ['برنامج تشغيل', 'متصفح ويب', 'برنامج ترميز', 'محرر صور'], correct: 'متصفح ويب', explanation: 'المتصفح يسمح بفتح صفحات الإنترنت.' },
-                { text: 'ما المقصود بكلمة URL؟', options: ['عنوان صفحة ويب', 'نوع ملف', 'كلمة مرور', 'برنامج'], correct: 'عنوان صفحة ويب', explanation: 'URL هو عنوان الصفحة على الإنترنت.' },
-                { text: 'ما هو الهدف من كلمة المرور القوية؟', options: ['تسهيل الدخول', 'زيادة السرعة', 'الحماية', 'تغيير اللغة'], correct: 'الحماية', explanation: 'كلمة المرور القوية تحمي الحساب.' },
-                { text: 'ما هو البريد الإلكتروني؟', options: ['أداة تسجيل', 'رسالة رقمية', 'برنامج تشغيل', 'متصفح'], correct: 'رسالة رقمية', explanation: 'البريد الإلكتروني يُستخدم لإرسال الرسائل إلكترونيًا.' },
-                { text: 'ما هي أفضل طريقة للحفاظ على البيانات؟', options: ['إيقاف الجهاز', 'النسخ الاحتياطي', 'إغلاق المتصفح', 'إيقاف الإنترنت'], correct: 'النسخ الاحتياطي', explanation: 'النسخ الاحتياطي يحافظ على البيانات من الضياع.' }
-              ]
-            }
+            { id: 'chapter1', title: 'الفصل الأول: أساسيات الحاسوب', questions: [
+              { text: 'ما هي أداة إدخال البيانات؟', options: ['المعالج', 'الماوس', 'الشاشة', 'الطابعة'], correct: 'الماوس', explanation: 'الماوس هو جهاز إدخال.' },
+              { text: 'ما هي وحدة المعالجة المركزية؟', options: ['CPU', 'RAM', 'ROM', 'SSD'], correct: 'CPU', explanation: 'CPU هي وحدة المعالجة المركزية.' },
+              { text: 'ما هي الذاكرة المؤقتة؟', options: ['ROM', 'SSD', 'RAM', 'HD'], correct: 'RAM', explanation: 'RAM هي الذاكرة المؤقتة التي يعمل بها النظام.' },
+              { text: 'ما الذي يُستخدم لحفظ البيانات بشكل دائم؟', options: ['الذاكرة المؤقتة', 'القرص الصلب', 'المعالج', 'الشاشة'], correct: 'القرص الصلب', explanation: 'القرص الصلب يستخدم لحفظ البيانات بشكل دائم.' },
+              { text: 'ما هي شاشة العرض؟', options: ['جهاز إدخال', 'جهاز إخراج', 'جهاز تخزين', 'جهاز معالجة'], correct: 'جهاز إخراج', explanation: 'الشاشة تعرض المعلومات للمستخدم.' }
+            ]},
+            { id: 'chapter2', title: 'الفصل الثاني: الإنترنت والأمان', questions: [
+              { text: 'ما هو المتصفح؟', options: ['برنامج تشغيل', 'متصفح ويب', 'برنامج ترميز', 'محرر صور'], correct: 'متصفح ويب', explanation: 'المتصفح يسمح بفتح صفحات الإنترنت.' },
+              { text: 'ما المقصود بكلمة URL؟', options: ['عنوان صفحة ويب', 'نوع ملف', 'كلمة مرور', 'برنامج'], correct: 'عنوان صفحة ويب', explanation: 'URL هو عنوان الصفحة على الإنترنت.' },
+              { text: 'ما هو الهدف من كلمة المرور القوية؟', options: ['تسهيل الدخول', 'زيادة السرعة', 'الحماية', 'تغيير اللغة'], correct: 'الحماية', explanation: 'كلمة المرور القوية تحمي الحساب.' },
+              { text: 'ما هو البريد الإلكتروني؟', options: ['أداة تسجيل', 'رسالة رقمية', 'برنامج تشغيل', 'متصفح'], correct: 'رسالة رقمية', explanation: 'البريد الإلكتروني يُستخدم لإرسال الرسائل إلكترونيًا.' },
+              { text: 'ما هي أفضل طريقة للحفاظ على البيانات؟', options: ['إيقاف الجهاز', 'النسخ الاحتياطي', 'إغلاق المتصفح', 'إيقاف الإنترنت'], correct: 'النسخ الاحتياطي', explanation: 'النسخ الاحتياطي يحافظ على البيانات من الضياع.' }
+            ]}
           ]
         }
       ]
@@ -139,22 +108,29 @@ const ExamPage = {
   },
   computed: {
     selectedSubject() {
-      return this.subjects.find(subject => subject.id === this.selectedSubjectId) || this.subjects[0];
+      return this.selectedSubjectId ? this.subjects.find(subject => subject.id === this.selectedSubjectId) : null;
     },
     selectedChapter() {
-      return this.selectedSubject.chapters.find(chapter => chapter.id === this.selectedChapterId) || this.selectedSubject.chapters[0];
+      return this.selectedSubject && this.selectedChapterId
+        ? this.selectedSubject.chapters.find(chapter => chapter.id === this.selectedChapterId)
+        : null;
     },
     currentQuestion() {
-      return this.selectedChapter.questions[this.currentQuestionIndex] || null;
+      return this.selectedChapter ? this.selectedChapter.questions[this.currentQuestionIndex] : null;
     },
     totalQuestions() {
-      return this.selectedChapter.questions.length;
+      return this.selectedChapter ? this.selectedChapter.questions.length : 0;
     },
     progressPercent() {
       return this.totalQuestions ? ((this.currentQuestionIndex + 1) / this.totalQuestions) * 100 : 0;
     },
+    timerPercent() {
+      return this.examDurationSeconds ? (this.timeRemainingSeconds / this.examDurationSeconds) * 100 : 0;
+    },
     isLocked() {
-      return this.lockUntil && Date.now() < this.lockUntil;
+      if (!this.selectedSubject || !this.selectedChapter) return false;
+      const key = `${this.selectedSubject.id}:${this.selectedChapter.id}`;
+      return this.lockedExams[key] && Date.now() < this.lockedExams[key];
     },
     timeRemainingSeconds() {
       if (this.currentStep !== 'quiz' || !this.examStartedAt) {
@@ -176,6 +152,12 @@ const ExamPage = {
     completionMessage() {
       if (this.timeExpired) return 'انتهى الوقت قبل إكمال الأسئلة، يمكنك المحاولة لاحقًا.';
       return 'أحسنت، يمكنك مراجعة الإجابات والأخطاء أدناه.';
+    },
+    correctCount() {
+      return this.review.filter(item => item.isCorrect).length;
+    },
+    wrongCount() {
+      return this.review.filter(item => !item.isCorrect).length;
     }
   },
   mounted() {
@@ -224,11 +206,16 @@ const ExamPage = {
     },
     selectSubject(subjectId) {
       this.selectedSubjectId = subjectId;
-      this.selectedChapterId = this.selectedSubject.chapters[0].id;
+      this.selectedChapterId = null;
       this.resetExam();
     },
     selectChapter(chapterId) {
       this.selectedChapterId = chapterId;
+      this.resetExam();
+    },
+    resetSelection() {
+      this.selectedSubjectId = null;
+      this.selectedChapterId = null;
       this.resetExam();
     },
     startExam() {
@@ -273,7 +260,7 @@ const ExamPage = {
       }
     },
     finishExam(forceTimeOut = false) {
-      if (this.currentStep !== 'quiz') return;
+      if (this.currentStep !== 'quiz' || !this.selectedSubject || !this.selectedChapter) return;
       const questions = this.selectedChapter.questions;
       let correctAnswers = 0;
       const review = [];
@@ -294,7 +281,8 @@ const ExamPage = {
       this.currentStep = 'result';
       this.examFinishedAt = Date.now();
       this.timeExpired = forceTimeOut;
-      this.lockUntil = Date.now() + this.cooldownSeconds * 1000;
+      const key = `${this.selectedSubject.id}:${this.selectedChapter.id}`;
+      this.lockedExams[key] = Date.now() + this.cooldownSeconds * 1000;
       this.stopTimer();
     },
     getResultText() {
@@ -311,6 +299,19 @@ const ExamPage = {
     },
     formatClock(timestamp) {
       return new Intl.DateTimeFormat('ar-SA', { hour: '2-digit', minute: '2-digit' }).format(timestamp);
+    },
+    getExamLockRemaining() {
+      if (!this.selectedSubject || !this.selectedChapter) return 0;
+      const key = `${this.selectedSubject.id}:${this.selectedChapter.id}`;
+      const until = this.lockedExams[key];
+      if (!until) return 0;
+      return Math.max(0, Math.ceil((until - Date.now()) / 1000));
+    },
+    formatLockRemaining() {
+      const seconds = this.getExamLockRemaining();
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
   },
   template: `
@@ -326,52 +327,64 @@ const ExamPage = {
           <h3>أنت جاهز للانطلاق</h3>
           <p>5 أسئلة لكل اختبار • مؤقت واضح • نتائج فورية</p>
         </div>
-        <div class="timer-pill" :class="timerToneClass">
-          <span class="timer-icon">⏱</span>
-          <div>
-            <strong>{{ currentStep === 'quiz' ? formatTimeRemaining() : '03:00' }}</strong>
-            <small>{{ currentStep === 'quiz' ? 'الوقت المتبقي' : 'المدة المسموح بها' }}</small>
+        <div class="timer-ring-wrap">
+          <div class="timer-ring" :style="{ background: 'conic-gradient(#2563eb ' + timerPercent + '%, rgba(255,255,255,0.2) 0)' }">
+            <div class="timer-ring-inner">
+              <strong>{{ currentStep === 'quiz' ? formatTimeRemaining() : '03:00' }}</strong>
+              <small>{{ currentStep === 'quiz' ? 'الوقت المتبقي' : 'المدة' }}</small>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="exam-setup-card">
-        <div class="exam-section-title">اختيار المادة</div>
-        <div class="subject-pill-list">
+        <div v-if="!selectedSubjectId" class="subject-selector-grid">
           <button
             v-for="subject in subjects"
             :key="subject.id"
-            class="subject-pill"
-            :class="selectedSubjectId === subject.id ? 'subject-pill-active' : ''"
-            :style="selectedSubjectId === subject.id ? { background: subject.color, color: '#fff' } : {}"
+            class="subject-choice-card"
+            :style="{ background: subject.color }"
             @click="selectSubject(subject.id)"
           >
-            {{ subject.name }}
+            <span class="subject-choice-title">{{ subject.name }}</span>
+            <span class="subject-choice-sub">{{ subject.chapters.length }} اختبارات</span>
           </button>
         </div>
 
-        <div class="exam-section-title">اختيار الاختبار</div>
-        <div class="chapter-list">
-          <button
-            v-for="chapter in selectedSubject.chapters"
-            :key="chapter.id"
-            class="chapter-btn"
-            :class="selectedChapterId === chapter.id ? 'chapter-btn-active' : ''"
-            :style="selectedChapterId === chapter.id ? { background: selectedSubject.color, color: '#fff' } : {}"
-            @click="selectChapter(chapter.id)"
-          >
-            {{ chapter.title }}
-          </button>
-        </div>
-
-        <div class="exam-start-box">
-          <div>
-            <strong>{{ selectedSubject.name }}</strong>
-            <p>{{ selectedChapter.title }}</p>
+        <div v-else class="selected-subject-panel">
+          <div class="selected-subject-row">
+            <div>
+              <div class="exam-section-title">المادة المختارة</div>
+              <h3>{{ selectedSubject.name }}</h3>
+            </div>
+            <button class="text-link-btn" @click="resetSelection">تغيير المادة</button>
           </div>
-          <button class="exam-btn primary" @click="startExam" :disabled="isLocked">
-            {{ isLocked ? 'سيتم التفعيل بعد ' + formatTimeRemaining() : 'ابدأ الاختبار' }}
-          </button>
+
+          <div v-if="!selectedChapterId" class="chapter-selector-grid">
+            <button
+              v-for="chapter in selectedSubject.chapters"
+              :key="chapter.id"
+              class="chapter-choice-card"
+              :class="selectedChapterId === chapter.id ? 'chapter-choice-card-active' : ''"
+              :style="selectedChapterId === chapter.id ? { background: selectedSubject.color, color: '#fff' } : {}"
+              @click="selectChapter(chapter.id)"
+            >
+              <span>{{ chapter.title }}</span>
+            </button>
+          </div>
+
+          <div v-else class="selected-chapter-card">
+            <div>
+              <div class="exam-section-title">الاختبار المختار</div>
+              <h3>{{ selectedChapter.title }}</h3>
+            </div>
+            <div class="exam-actions">
+              <button class="exam-btn secondary" @click="selectChapter(null)">تغيير الاختبار</button>
+              <button class="exam-btn primary" @click="startExam" :disabled="isLocked">
+                {{ isLocked ? 'سيتم التفعيل بعد ' + formatLockRemaining() : 'ابدأ الاختبار' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -383,18 +396,19 @@ const ExamPage = {
           <span>{{ currentQuestionIndex + 1 }} / {{ totalQuestions }}</span>
         </div>
 
-        <div class="exam-question-box">
+        <div class="exam-question-shell">
           <div class="question-badge">سؤال {{ currentQuestionIndex + 1 }}</div>
           <h3>{{ currentQuestion.text }}</h3>
           <div class="exam-options">
             <button
-              v-for="option in currentQuestion.options"
+              v-for="(option, index) in currentQuestion.options"
               :key="option"
               class="exam-option"
               :class="answers[currentQuestionIndex] === option ? 'exam-option-selected' : ''"
               @click="chooseAnswer(option)"
             >
-              {{ option }}
+              <span class="option-index">{{ index + 1 }}</span>
+              <span>{{ option }}</span>
             </button>
           </div>
         </div>
@@ -407,7 +421,23 @@ const ExamPage = {
       </div>
 
       <div v-else-if="currentStep === 'result'" class="exam-result-card">
-        <div class="result-score">{{ score }}%</div>
+        <div class="result-summary">
+          <div class="result-score-ring">
+            <strong>{{ score }}%</strong>
+            <span>النتيجة</span>
+          </div>
+          <div class="result-stats-grid">
+            <div class="result-stat-card success">
+              <strong>{{ correctCount }}</strong>
+              <span>إجابات صحيحة</span>
+            </div>
+            <div class="result-stat-card danger">
+              <strong>{{ wrongCount }}</strong>
+              <span>أخطاء</span>
+            </div>
+          </div>
+        </div>
+
         <div class="result-badge">{{ completionTitle }}</div>
         <h3>{{ getResultText() }}</h3>
         <p>{{ completionMessage }}</p>
@@ -418,7 +448,10 @@ const ExamPage = {
 
         <div class="review-list">
           <div v-for="(item, index) in review" :key="index" class="review-item">
-            <p class="review-question">{{ index + 1 }}. {{ item.text }}</p>
+            <div class="review-item-top">
+              <span class="review-status" :class="item.isCorrect ? 'review-status-correct' : 'review-status-wrong'">{{ item.isCorrect ? 'صح' : 'خطأ' }}</span>
+              <p class="review-question">{{ index + 1 }}. {{ item.text }}</p>
+            </div>
             <p class="review-answer">إجابتك: <strong>{{ item.chosenAnswer }}</strong></p>
             <p class="review-correct">الإجابة الصحيحة: <strong>{{ item.correct }}</strong></p>
             <p v-if="!item.isCorrect" class="review-explanation">{{ item.explanation }}</p>
@@ -427,9 +460,9 @@ const ExamPage = {
 
         <div class="exam-actions">
           <button class="exam-btn primary" @click="startExam" :disabled="isLocked">
-            {{ isLocked ? 'سيتم التفعيل بعد ' + formatTimeRemaining() : 'إعادة الاختبار' }}
+            {{ isLocked ? 'سيتم التفعيل بعد ' + formatLockRemaining() : 'إعادة الاختبار' }}
           </button>
-          <button class="exam-btn secondary" @click="resetExam">اختيار مادة أخرى</button>
+          <button class="exam-btn secondary" @click="resetSelection">اختيار مادة أخرى</button>
         </div>
       </div>
     </section>
