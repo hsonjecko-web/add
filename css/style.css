@@ -13,6 +13,7 @@ html[data-color="default"] {
   --card-bg: #ffffff;
   --card-border: #f1f5f9;
   --input-bg: #ffffff;
+  --nav-glow: rgba(59,130,246,0.5);
 }
 html[data-color="default"][data-theme="dark"],
 [data-theme="dark"] {
@@ -45,6 +46,7 @@ html[data-color="pink"] {
   --card-bg: #ffffff;
   --card-border: #fce7f3;
   --input-bg: #ffffff;
+  --nav-glow: rgba(236,72,153,0.5);
 }
 html[data-color="pink"][data-theme="dark"] {
   --brand-blue: #a61e6d;
@@ -76,6 +78,7 @@ html[data-color="purple"] {
   --card-bg: #ffffff;
   --card-border: #ede9fe;
   --input-bg: #ffffff;
+  --nav-glow: rgba(124,58,237,0.5);
 }
 html[data-color="purple"][data-theme="dark"] {
   --brand-blue: #6d28d9;
@@ -107,6 +110,7 @@ html[data-color="super"] {
   --card-bg: #ffffff;
   --card-border: #e2e8f0;
   --input-bg: #ffffff;
+  --nav-glow: rgba(99,102,241,0.5);
 }
 html[data-color="super"][data-theme="dark"] {
   --brand-blue: #0f172a;
@@ -138,6 +142,7 @@ html[data-color="ocean"] {
   --card-bg: #ffffff;
   --card-border: #ccfbf1;
   --input-bg: #ffffff;
+  --nav-glow: rgba(20,184,166,0.5);
 }
 html[data-color="ocean"][data-theme="dark"] {
   --brand-blue: #0f766e;
@@ -190,9 +195,18 @@ body {
   padding: 2.5rem 1rem 1.5rem;
   border-bottom-right-radius: 2rem;
   border-bottom-left-radius: 2rem;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
   z-index: 1000;
+}
+
+#app {
+  padding-top: 6.5rem;
 }
 
 .header-top {
@@ -2673,41 +2687,24 @@ body {
 
 .nav-active {
   color: #ffffff;
-  transform: translateY(-10px);
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 10px 18px rgba(0,0,0,0.22);
+  transform: translateY(-12px);
+  background: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
 
 .nav-active svg {
-  transform: scale(1.1);
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 8px var(--nav-glow)) drop-shadow(0 0 20px var(--nav-glow));
 }
 
 .nav-active span {
   font-weight: 800;
+  text-shadow: 0 0 12px var(--nav-glow), 0 0 24px var(--nav-glow);
 }
 
 .nav-inactive {
   color: rgba(255,255,255,0.7);
-}
-
-.nav-home.nav-active {
-  color: #ffe082;
-}
-
-.nav-subjects.nav-active {
-  color: #90caf9;
-}
-
-.nav-questions.nav-active {
-  color: #f8bbd0;
-}
-
-.nav-tools.nav-active {
-  color: #a5d6a7;
-}
-
-.nav-settings.nav-active {
-  color: #d1c4e9;
 }
 
 .nav-home:not(.nav-active),
@@ -2725,7 +2722,7 @@ body.dark .nav-item {
 }
 
 body.dark .nav-active {
-  background: linear-gradient(145deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+  background: none !important;
   color: #ffffff;
 }
 
@@ -2785,9 +2782,9 @@ html[data-color="super"] .nav-item:hover {
 }
 
 html[data-color="super"] .nav-active {
-  background: rgba(255,255,255,0.2);
-  border-color: rgba(255,255,255,0.4);
-  box-shadow: 0 4px 20px rgba(99,102,241,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  background: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
   transform: translateY(-12px) scale(1.05);
   color: #ffffff;
 }
@@ -2885,43 +2882,50 @@ html[data-color="super"] .exam-card {
    🎀 ثيم وردي - ناعم ومرح
    =========================== */
 html[data-color="pink"] .app-header {
-  border-bottom-right-radius: 3rem;
-  border-bottom-left-radius: 3rem;
-  background: linear-gradient(0deg, transparent 0%, var(--brand-blue) 100%);
-  box-shadow: 0 8px 30px rgba(214,51,132,0.25);
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: linear-gradient(180deg, #ec4899 0%, #db2777 50%, #be185d 100%);
+  box-shadow: 0 8px 32px rgba(219,39,119,0.3);
+  border-bottom: 4px solid #fbcfe8;
+}
+
+html[data-color="pink"][data-theme="dark"] .app-header {
+  background: linear-gradient(180deg, #831843 0%, #701a4a 50%, #5b143a 100%);
+  border-bottom-color: #3d1e32;
 }
 
 html[data-color="pink"] .bottom-nav {
-  background: #fdf2f8;
-  border-top-left-radius: 1.5rem;
-  border-top-right-radius: 1.5rem;
-  box-shadow: 0 -4px 20px rgba(214,51,132,0.1);
-  border-top: 2px solid #fbcfe8;
-}
-
-html[data-color="pink"][data-theme="dark"] .bottom-nav {
-  background: #1a0a14;
-  border-top-color: #3d1e32;
+  background: transparent;
+  border-top: none;
+  box-shadow: none;
+  padding: 0.75rem 0.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 html[data-color="pink"] .nav-item {
-  background: #fbcfe8;
-  border: none;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(214,51,132,0.08);
+  background: linear-gradient(145deg, #fbcfe8, #f9a8d4);
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 12px rgba(214,51,132,0.12), inset 0 1px 0 rgba(255,255,255,0.4);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   color: #9d174d;
+  min-width: 2.8rem;
+  flex: 0 1 auto;
+  padding: 0.5rem 0.45rem;
 }
 
 html[data-color="pink"] .nav-item:hover {
-  transform: translateY(-2px);
-  background: #f9a8d4;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(214,51,132,0.2), inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
 html[data-color="pink"] .nav-active {
-  background: #d63384 !important;
-  box-shadow: 0 6px 20px rgba(214,51,132,0.35), inset 0 1px 0 rgba(255,255,255,0.2) !important;
-  transform: translateY(-8px) scale(1.08);
+  background: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: translateY(-12px) scale(1.1);
   color: #ffffff !important;
 }
 
@@ -2929,25 +2933,19 @@ html[data-color="pink"] .nav-inactive {
   color: #9d174d;
 }
 
-html[data-color="pink"] .nav-home.nav-active,
-html[data-color="pink"] .nav-subjects.nav-active,
-html[data-color="pink"] .nav-questions.nav-active,
-html[data-color="pink"] .nav-tools.nav-active,
-html[data-color="pink"] .nav-settings.nav-active {
-  color: #ffffff !important;
-}
-
 html[data-color="pink"][data-theme="dark"] .nav-item {
-  background: #2d1428;
+  background: linear-gradient(145deg, #2d1428, #3d1e32);
+  border-color: rgba(255,255,255,0.1);
   color: #f9a8d4;
 }
 
 html[data-color="pink"][data-theme="dark"] .nav-item:hover {
-  background: #3d1e32;
+  background: linear-gradient(145deg, #3d1e32, #4d2840);
 }
 
 html[data-color="pink"][data-theme="dark"] .nav-active {
-  background: #d63384 !important;
+  background: none !important;
+  border-color: transparent !important;
   color: #ffffff !important;
 }
 
@@ -2956,19 +2954,42 @@ html[data-color="pink"][data-theme="dark"] .nav-inactive {
 }
 
 html[data-color="pink"] .subject-card {
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 24px rgba(214,51,132,0.15);
+  border-radius: 2rem 1rem;
+  border: 2px solid rgba(255,255,255,0.25);
+  box-shadow: 0 8px 28px rgba(214,51,132,0.12);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 html[data-color="pink"] .subject-card:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 32px rgba(214,51,132,0.25);
+  box-shadow: 0 16px 40px rgba(214,51,132,0.25);
 }
 
-/* أيقونات وردي - كرة نطاطة */
+html[data-color="pink"] .featured-card,
+html[data-color="pink"] .chapter-card,
+html[data-color="pink"] .exam-card {
+  border-radius: 2rem 1rem;
+  border: 2px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 28px rgba(214,51,132,0.06);
+}
+
+html[data-color="pink"] .featured-card {
+  background: linear-gradient(135deg, #ec4899, #a21caf) !important;
+}
+
+html[data-color="pink"] .subject-choice-card,
+html[data-color="pink"] .chapter-choice-card {
+  border-radius: 2rem 1rem !important;
+}
+
+html[data-color="pink"] .settings-section-icon {
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+}
+
+/* أيقونات وردي - نبض لطيف */
 html[data-color="pink"] .nav-item svg {
-  animation: pinkBounce 2s ease-in-out infinite;
+  animation: pinkHeartbeat 2s ease-in-out infinite;
 }
 
 html[data-color="pink"] .nav-item:nth-child(2) svg { animation-delay: 0.2s; }
@@ -2976,25 +2997,43 @@ html[data-color="pink"] .nav-item:nth-child(3) svg { animation-delay: 0.4s; }
 html[data-color="pink"] .nav-item:nth-child(4) svg { animation-delay: 0.6s; }
 html[data-color="pink"] .nav-item:nth-child(5) svg { animation-delay: 0.8s; }
 
-@keyframes pinkBounce {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15) rotate(-5deg); }
+@keyframes pinkHeartbeat {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(219,39,119,0)); }
+  25% { transform: scale(1.12); filter: drop-shadow(0 0 4px rgba(219,39,119,0.4)); }
+  50% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(219,39,119,0)); }
+  75% { transform: scale(1.12); filter: drop-shadow(0 0 4px rgba(219,39,119,0.4)); }
 }
 
 html[data-color="pink"] .education-icon {
-  animation: pinkSway 3s ease-in-out infinite;
+  animation: pinkSparkle 3s ease-in-out infinite;
 }
 
-@keyframes pinkSway {
-  0%, 100% { transform: rotate(0); }
-  50% { transform: rotate(10deg); }
+@keyframes pinkSparkle {
+  0%, 100% { transform: scale(1) rotate(0); opacity: 0.9; }
+  33% { transform: scale(1.1) rotate(-5deg); opacity: 1; filter: drop-shadow(0 0 3px rgba(255,255,255,0.5)); }
+  66% { transform: scale(1.1) rotate(5deg); opacity: 1; filter: drop-shadow(0 0 3px rgba(255,255,255,0.5)); }
 }
 
-html[data-color="pink"] .featured-card,
-html[data-color="pink"] .chapter-card,
-html[data-color="pink"] .exam-card {
+html[data-color="pink"] .exam-btn.primary {
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  box-shadow: 0 4px 16px rgba(219,39,119,0.3);
+}
+
+html[data-color="pink"] .exam-btn.primary:hover {
+  box-shadow: 0 6px 24px rgba(219,39,119,0.4);
+}
+
+html[data-color="pink"] .exam-hero-card {
+  background: linear-gradient(135deg, rgba(236,72,153,0.12), rgba(219,39,119,0.08));
+}
+
+html[data-color="pink"] .exam-question-shell {
+  border-radius: 2rem 1rem;
+}
+
+html[data-color="pink"] .exam-option {
   border-radius: 1.5rem;
-  box-shadow: 0 8px 24px rgba(214,51,132,0.08);
 }
 
 /* ===========================
@@ -3008,7 +3047,6 @@ html[data-color="purple"] .app-header {
   background: linear-gradient(135deg, #2e1a4a 0%, var(--brand-blue) 50%, var(--brand-teal) 100%);
   box-shadow: 0 8px 32px rgba(124,58,237,0.3);
   border-bottom: none;
-  position: relative;
 }
 
 html[data-color="purple"] .app-header::after {
@@ -3055,23 +3093,15 @@ html[data-color="purple"] .nav-item:hover {
 }
 
 html[data-color="purple"] .nav-active {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
-  border-color: rgba(139,92,246,0.4);
-  box-shadow: 0 0 20px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
-  transform: translateY(-8px);
+  background: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: translateY(-10px);
   color: #ffffff;
 }
 
 html[data-color="purple"] .nav-inactive {
   color: rgba(255,255,255,0.6);
-}
-
-html[data-color="purple"] .nav-home.nav-active,
-html[data-color="purple"] .nav-subjects.nav-active,
-html[data-color="purple"] .nav-questions.nav-active,
-html[data-color="purple"] .nav-tools.nav-active,
-html[data-color="purple"] .nav-settings.nav-active {
-  color: #ffffff;
 }
 
 html[data-color="purple"] .subject-card {
@@ -3122,7 +3152,6 @@ html[data-color="ocean"] .app-header {
   border-bottom-left-radius: 1.5rem;
   border-top-right-radius: 0;
   border-top-left-radius: 1.5rem;
-  position: relative;
   background: linear-gradient(200deg, #0d9488 0%, #0f766e 50%, #0891b2 100%);
   box-shadow: 0 8px 32px rgba(13,148,136,0.25);
   overflow: hidden;
@@ -3174,22 +3203,10 @@ html[data-color="ocean"] .nav-item:hover {
 }
 
 html[data-color="ocean"] .nav-active {
-  background: #14b8a6 !important;
-  border-color: #5eead4 !important;
-  box-shadow: 0 4px 16px rgba(20,184,166,0.3), inset 0 1px 0 rgba(255,255,255,0.2) !important;
-  transform: translateY(-6px);
-  color: #ffffff !important;
-}
-
-html[data-color="ocean"] .nav-inactive {
-  color: rgba(255,255,255,0.5);
-}
-
-html[data-color="ocean"] .nav-home.nav-active,
-html[data-color="ocean"] .nav-subjects.nav-active,
-html[data-color="ocean"] .nav-questions.nav-active,
-html[data-color="ocean"] .nav-tools.nav-active,
-html[data-color="ocean"] .nav-settings.nav-active {
+  background: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: translateY(-10px);
   color: #ffffff !important;
 }
 
@@ -3203,9 +3220,10 @@ html[data-color="ocean"][data-theme="dark"] .nav-item:hover {
 }
 
 html[data-color="ocean"][data-theme="dark"] .nav-active {
-  background: #0d9488 !important;
-  border-color: #5eead4 !important;
-  box-shadow: 0 4px 16px rgba(13,148,136,0.25), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+  background: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
 }
 
 html[data-color="ocean"] .subject-card {
