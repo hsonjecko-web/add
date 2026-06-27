@@ -1469,6 +1469,24 @@ body {
   background: rgba(30,91,163,0.1);
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
+  transition: all 0.3s;
+}
+.timer-pill-normal {
+  color: var(--brand-blue);
+  background: rgba(30,91,163,0.1);
+}
+.timer-pill-warning {
+  color: #f59e0b;
+  background: rgba(245,158,11,0.15);
+}
+.timer-pill-danger {
+  color: #dc2626;
+  background: rgba(220,38,38,0.15);
+  animation: pulse 0.5s ease-in-out infinite alternate;
+}
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
 }
 
 .exam-question-shell {

@@ -1,6 +1,8 @@
 const SubjectsPage = {
   data() {
-    return {};
+    return {
+      selectedSubjectId: null
+    };
   },
   computed: {
     isStudent() {
@@ -13,69 +15,92 @@ const SubjectsPage = {
       if (this.isStudent) {
         return AppStore.getSubjects(AppStore.selectedStage).map(s => ({
           ...s,
-          description: s.chapters?.length + ' فصول دراسية',
-          tag: this.stageLabel,
-          lessons: s.chapters?.length + ' فصل',
-          tests: (AppStore.getExam(s.id) ? '1' : '0') + ' اختبار',
-          accent: 'linear-gradient(135deg, var(--brand-blue), var(--brand-secondary))',
-          image: ''
+          accent: 'linear-gradient(135deg, var(--brand-blue), var(--brand-secondary))'
         }));
       }
-      return [
-        {
-          name: 'الرياضيات', description: 'المعادلات، التفاضل، والهندسة', tag: 'تحليل وحساب',
-          lessons: '12 فصل', tests: '8 اختبارات',
-          accent: 'linear-gradient(135deg, #dbeafe 0%, #2563eb 50%, #1d4ed8 100%)',
-          image: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=900&q=80'
-        },
-        {
-          name: 'العلوم', description: 'الفيزياء، الكيمياء، والأحياء', tag: 'تجارب ومفاهيم',
-          lessons: '10 فصول', tests: '6 اختبارات',
-          accent: 'linear-gradient(135deg, #ccfbf1 0%, #14b8a6 50%, #0f766e 100%)',
-          image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=900&q=80'
-        },
-        {
-          name: 'اللغة العربية', description: 'قواعد، أدب، وبلاغة', tag: 'إبداع وتعبير',
-          lessons: '9 فصول', tests: '7 اختبارات',
-          accent: 'linear-gradient(135deg, #ede9fe 0%, #8b5cf6 50%, #6d28d9 100%)',
-          image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80'
-        },
-        {
-          name: 'الحاسوب', description: 'برمجة، شبكات، وتقنية', tag: 'تطوير وتكنولوجيا',
-          lessons: '11 فصل', tests: '9 اختبارات',
-          accent: 'linear-gradient(135deg, #ffedd5 0%, #fb923c 50%, #ea580c 100%)',
-          image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80'
-        }
-      ];
+      return [];
+    },
+    selectedSubject() {
+      if (!this.selectedSubjectId) return null;
+      return this.subjects.find(s => s.id === this.selectedSubjectId);
+    },
+    chapters() {
+      return this.selectedSubject ? this.selectedSubject.chapters : [];
     }
   },
   methods: {
-    openSubject(subj) {
-      if (this.isStudent) {
-        AppStore.viewSubject(subj);
-      }
+    selectSubject(subjectId) {
+      this.selectedSubjectId = subjectId;
+    },
+    backToSubjects() {
+      this.selectedSubjectId = null;
+      AppStore.selectedChapter = null;
+    },
+    startExam(chapterIndex) {
+      AppStore.selectedChapter = chapterIndex;
+      AppStore.selectedSubject = this.selectedSubject;
+      AppStore.view = 'exam';
+    },
+    getChapterGradient(index) {
+      const palettes = [
+        'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+        'linear-gradient(135deg, #60a5fa, #3b82f6)',
+        'linear-gradient(135deg, #10b981, #059669)',
+        'linear-gradient(135deg, #34d399, #10b981)',
+        'linear-gradient(135deg, #f59e0b, #d97706)',
+        'linear-gradient(135deg, #fbbf24, #f59e0b)',
+        'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+        'linear-gradient(135deg, #a78bfa, #8b5cf6)',
+        'linear-gradient(135deg, #ec4899, #db2777)',
+        'linear-gradient(135deg, #f472b6, #ec4899)',
+      ];
+      return palettes[index % palettes.length];
     }
   },
   template: `
     <section class="subjects-page">
-      <div class="subjects-intro">
-        <h2 v-if="isStudent">المواد الدراسية - {{ stageLabel }}</h2>
-        <h2 v-else>المواد الدراسية</h2>
-        <p>استكشف المواد المتاحة حسب مرحلتك الدراسية</p>
-      </div>
-      <div class="subjects-grid">
-        <article v-for="subject in subjects" :key="subject.name" class="subject-card" :style="{ background: subject.accent }" @click="openSubject(subject)">
-          <img v-if="subject.image" class="subject-image" :src="subject.image" :alt="subject.name" />
-          <div class="subject-content">
-            <span class="subject-tag" :style="{ background: subject.accent }">{{ subject.tag }}</span>
-            <h3>{{ subject.name }}</h3>
-            <p>{{ subject.description }}</p>
-            <div class="subject-stats">
-              <span>{{ subject.lessons }}</span>
-              <span>{{ subject.tests }}</span>
+      <div v-if="!selectedSubjectId" class="subjects-list-view">
+        <div class="subjects-intro">
+          <h2>المواد الدراسية - {{ stageLabel }}</h2>
+          <p>اختر المادة لعرض فصولها الدراسية</p>
+        </div>
+        <div class="subjects-grid">
+          <article v-for="subject in subjects" :key="subject.id" class="subject-card" :style="{ background: subject.accent }" @click="selectSubject(subject.id)">
+            <div class="subject-content">
+              <span class="subject-tag" :style="{ background: subject.accent }">{{ stageLabel }}</span>
+              <h3>{{ subject.name }}</h3>
+              <p>{{ subject.chapters?.length || 0 }} فصول دراسية</p>
+              <div class="subject-stats">
+                <span>{{ subject.chapters?.length || 0 }} فصل</span>
+              </div>
             </div>
-          </div>
-        </article>
+          </article>
+        </div>
+      </div>
+
+      <div v-else class="chapters-view">
+        <button class="back-btn" @click="backToSubjects">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          العودة للمواد
+        </button>
+
+        <div class="subjects-intro">
+          <h2>{{ selectedSubject.name }}</h2>
+          <p>اختر الفصل لبدء الاختبار</p>
+        </div>
+
+        <div class="chapter-selector-grid">
+          <button
+            v-for="(chapter, index) in chapters"
+            :key="index"
+            class="chapter-choice-card"
+            :style="{ background: getChapterGradient(index) }"
+            @click="startExam(index)"
+          >
+            <span class="chapter-icon">{{ index + 1 }}</span>
+            <span>{{ chapter }}</span>
+          </button>
+        </div>
       </div>
     </section>
   `

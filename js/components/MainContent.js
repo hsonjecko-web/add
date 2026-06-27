@@ -114,26 +114,7 @@ const MainContent = {
         </div>
       </section>
 
-      <section v-if="isStudent" class="subjects-section">
-        <div class="subjects-header">
-          <h2>موادي الدراسية</h2>
-          <span class="stage-badge">{{ stageLabel }}</span>
-        </div>
-        <div class="home-subjects-grid">
-          <div v-for="subj in stageSubjects" :key="subj.id" class="home-subject-card" @click="openSubject(subj)">
-            <div class="hs-icon">
-              <span v-html="subjectIcon(subj.name)" style="font-size:1.2rem;font-weight:700"></span>
-            </div>
-            <div class="hs-info">
-              <h4>{{ subj.name }}</h4>
-              <p>{{ subj.chapters?.length || 0 }} فصول</p>
-            </div>
-            <div class="hs-arrow">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       <section class="featured-section">
         <h2 class="section-title">الأستاذ المتميز</h2>

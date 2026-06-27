@@ -4,6 +4,7 @@ var AppStore = Vue.reactive({
   userRole: null,
   selectedStage: null,
   selectedSubject: null,
+  selectedChapter: null,
   view: 'login',
 
   login(user) {
@@ -24,6 +25,7 @@ var AppStore = Vue.reactive({
     this.userRole = null;
     this.selectedStage = null;
     this.selectedSubject = null;
+    this.selectedChapter = null;
     this.view = 'login';
     localStorage.removeItem('app-user-role');
     localStorage.removeItem('app-user-id');
@@ -43,7 +45,52 @@ var AppStore = Vue.reactive({
 
   viewSubject(subject) {
     this.selectedSubject = subject;
-    this.view = 'studentDash';
+    this.selectedChapter = null;
+    this.view = 'subjects';
+  },
+
+  selectChapter(chapterIndex) {
+    this.selectedChapter = chapterIndex;
+  },
+
+  getChapterExam(subjectId, chapterIndex) {
+    const subj = this.getSubjectById(subjectId);
+    if (!subj) return null;
+    const chapterName = subj.chapters[chapterIndex];
+    if (!chapterName) return null;
+    const existing = window.demoData.exams[subjectId];
+    const baseQuestions = existing ? existing.questions : [];
+    const questions = baseQuestions.length > 0
+      ? baseQuestions.map((q, i) => ({
+          text: q.q,
+          options: q.options,
+          correct: q.options[q.answer],
+          explanation: 'راجع درس ' + chapterName
+        }))
+      : [
+          { text: 'سؤال حول ' + chapterName + ' - اختر الإجابة الصحيحة:', options: ['الخيار الأول', 'الخيار الثاني', 'الخيار الثالث', 'الخيار الرابع'], correct: 'الخيار الأول', explanation: 'راجع درس ' + chapterName },
+          { text: 'ما هو المفهوم الرئيسي في ' + chapterName + '؟', options: ['المفهوم الأول', 'المفهوم الثاني', 'المفهوم الثالث', 'المفهوم الرابع'], correct: 'المفهوم الأول', explanation: 'راجع درس ' + chapterName },
+          { text: 'أي مما يلي يتعلق بـ ' + chapterName + '؟', options: ['الخيار الأول', 'الخيار الثاني', 'الخيار الثالث', 'الخيار الرابع'], correct: 'الخيار الثاني', explanation: 'راجع درس ' + chapterName },
+          { text: 'تطبيقات ' + chapterName + ' تشمل:', options: ['التطبيق الأول', 'التطبيق الثاني', 'التطبيق الثالث', 'كل ما سبق'], correct: 'كل ما سبق', explanation: 'راجع درس ' + chapterName },
+          { text: 'مستوى فهمك لـ ' + chapterName + ':', options: ['مبتدئ', 'متوسط', 'متقدم', 'يحتاج دراسة'], correct: 'يحتاج دراسة', explanation: 'ادرس الدرس جيداً' }
+        ];
+    return {
+      id: 'ce_' + subjectId + '_' + chapterIndex,
+      title: 'اختبار ' + chapterName,
+      subjectId: subjectId,
+      chapterIndex: chapterIndex,
+      chapterName: chapterName,
+      timeLimit: existing ? existing.timeLimit : 15,
+      questions: questions
+    };
+  },
+
+  getSubjectById(subjectId) {
+    for (const sid in window.demoData.subjects) {
+      const found = window.demoData.subjects[sid].find(s => s.id === subjectId);
+      if (found) return found;
+    }
+    return null;
   },
 
   getSubjects(stageId) {

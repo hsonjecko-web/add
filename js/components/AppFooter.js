@@ -18,9 +18,13 @@ const AppFooter = {
       AppStore.view = 'home';
     },
     goSubjects() {
+      AppStore.selectedSubject = null;
+      AppStore.selectedChapter = null;
       AppStore.view = 'subjects';
     },
     goExam() {
+      AppStore.selectedSubject = null;
+      AppStore.selectedChapter = null;
       AppStore.view = 'exam';
     },
     goMyExams() {
@@ -60,7 +64,7 @@ const AppFooter = {
         </svg>
         <span>المواد</span>
       </button>
-      <button v-if="userRole === 'student'" class="nav-item nav-questions" :class="isActive('subjects') ? 'nav-active' : 'nav-inactive'" @click="goSubjects">
+      <button v-if="userRole === 'student'" class="nav-item nav-questions" :class="isActive('exam') ? 'nav-active' : 'nav-inactive'" @click="goExam">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 5.5a3.5 3.5 0 1 1 0 7"/>
           <path d="M8 13.5v1.5"/>

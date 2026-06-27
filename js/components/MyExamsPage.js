@@ -51,11 +51,15 @@ const MyExamsPage = {
         hour: '2-digit', minute: '2-digit'
       }).format(new Date(ts));
     },
+    formatDurationFromSeconds(seconds) {
+      if (!seconds) return '0:00 د';
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s + ' د';
+    },
     formatDuration(ts1, ts2) {
       const diff = Math.round((ts2 - ts1) / 1000);
-      const m = Math.floor(diff / 60);
-      const s = diff % 60;
-      return `${m}:${s.toString().padStart(2, '0')} د`;
+      return this.formatDurationFromSeconds(diff);
     }
   },
   template: `
@@ -119,6 +123,8 @@ const MyExamsPage = {
                 <div class="myexam-meta">
                   <span>{{ exam.correctCount }}/{{ exam.totalQuestions }} صح</span>
                   <span class="meta-dot">•</span>
+                  <span>{{ exam.durationFormatted || formatDurationFromSeconds(exam.duration) }}</span>
+                  <span class="meta-dot">•</span>
                   <span>{{ formatDate(exam.date) }}</span>
                 </div>
               </div>
@@ -168,7 +174,7 @@ const MyExamsPage = {
                 <span>إجمالي</span>
               </div>
             </div>
-            <p class="detail-date">{{ formatDate(selectedExam.date) }}</p>
+            <p class="detail-date">{{ formatDate(selectedExam.date) }} • المدة: {{ selectedExam.durationFormatted || formatDurationFromSeconds(selectedExam.duration) }}</p>
           </div>
         </div>
 
