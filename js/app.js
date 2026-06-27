@@ -21,17 +21,14 @@ const app = Vue.createApp({
     showSettings() { AppStore.view = 'settings'; },
     goBack() {
       if (this.isLoggedIn) {
-        if (this.store.userRole === 'student') AppStore.view = 'studentDash';
-        else if (this.store.userRole === 'parent') AppStore.view = 'parentDash';
-        else if (this.store.userRole === 'teacher') AppStore.view = 'teacherDash';
-        else if (this.store.userRole === 'owner') AppStore.view = 'ownerDash';
+        AppStore.view = 'home';
       }
     }
   },
   template: `
     <div>
       <app-header></app-header>
-      <login-page v-if="!isLoggedIn"></login-page>
+      <login-page v-if="!isLoggedIn || !currentView"></login-page>
       <student-dash v-else-if="currentView === 'studentDash'"></student-dash>
       <parent-dash v-else-if="currentView === 'parentDash'"></parent-dash>
       <teacher-dash v-else-if="currentView === 'teacherDash'"></teacher-dash>

@@ -694,6 +694,84 @@ body {
   margin-left: 0.125rem;
 }
 
+.subjects-section {
+  margin-bottom: 1.5rem;
+}
+.subjects-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.subjects-header h2 {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+.stage-badge {
+  background: var(--brand-blue);
+  color: white;
+  font-size: 0.65rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+.home-subjects-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.home-subject-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.home-subject-card:hover {
+  border-color: var(--brand-blue);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--brand-blue) 15%, transparent);
+}
+.home-subject-card:active {
+  transform: scale(0.98);
+}
+.hs-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--brand-blue) 12%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-blue);
+  flex-shrink: 0;
+  direction: ltr;
+}
+.hs-info {
+  flex: 1;
+  min-width: 0;
+}
+.hs-info h4 {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.15rem;
+}
+.hs-info p {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  margin: 0;
+}
+.hs-arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
 .course-card {
   margin-bottom: 1.5rem;
 }
@@ -4418,6 +4496,8 @@ html[data-color="slate"][data-theme="dark"] .subject-card {
 }
 .q-option.selected { border-color: var(--brand-blue); background: color-mix(in srgb, var(--brand-blue) 8%, transparent); }
 .q-option input { display: none; }
+.trial-over-msg { margin: 1rem 0; padding: 1rem; background: rgba(234,179,8,0.1); border: 1px solid #eab308; border-radius: 0.75rem; }
+.trial-over-msg p { font-size: 0.85rem; color: var(--text-primary); margin-bottom: 0.75rem; }
 .exam-result { text-align: center; padding: 2rem 1rem; }
 .result-circle { width: 8rem; height: 8rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
 .result-circle.pass { background: linear-gradient(135deg, #16a34a, #22c55e); }

@@ -6,14 +6,14 @@ const SettingsPage = {
       selectedColor: localStorage.getItem('app-color') || 'default',
       selectedDesign: localStorage.getItem('app-design') || 'classic',
       profile: {
-        name: 'أحمد الجبوري',
-        email: 'ahmed@example.com',
-        phone: '+964 770 123 4567',
-        avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAw4a4AH6wj8hkAYYHhgQ-DVzu086NDQ2EAmxpgzRVMYwxNa6rsQEpyTLNBct0WEgXIVsHa2z9JxyBxMg3RJ6yd7zHdte6CdXTuZow8OYekvty6g6ZVcpBF-NcHkEkCmivGLg8crVOcnfCurgkh6_uPMsvjmJnSZP-jUKlgTOLjHroHP12_LJsuDACIrB0LQKKhtf7K1zByfdl0K_lONQ961mWhMdd88lMUqRpodnan0ktG0gp6WebTfhG6cSiSwOs6-C2Oxw2whTCw'
+        name: AppStore.currentUser?.name || 'أحمد الجبوري',
+        email: AppStore.currentUser?.id + '@iraq-tech.com',
+        phone: AppStore.currentUser?.phone || '+964 770 123 4567',
+        avatar: ''
       },
       subscription: {
-        plan: 'المميز',
-        status: 'نشط',
+        plan: AppStore.currentUser?.isSubscribed ? 'المميز' : 'تجريبي',
+        status: AppStore.currentUser?.isSubscribed ? 'نشط' : 'غير مشترك',
         expires: '2026-12-31',
         features: ['جميع المواد', 'اختبارات غير محدودة', 'دعم فني 24/7', 'محاضرات مسجلة']
       },

@@ -15,10 +15,7 @@ const AppFooter = {
   },
   methods: {
     goHome() {
-      if (this.userRole === 'student') AppStore.view = 'studentDash';
-      else if (this.userRole === 'parent') AppStore.view = 'parentDash';
-      else if (this.userRole === 'teacher') AppStore.view = 'teacherDash';
-      else if (this.userRole === 'owner') AppStore.view = 'ownerDash';
+      AppStore.view = 'home';
     },
     goSubjects() {
       AppStore.view = 'subjects';
@@ -29,14 +26,15 @@ const AppFooter = {
     goMyExams() {
       AppStore.view = 'myexams';
     },
+    goDash() {
+      if (this.userRole === 'parent') AppStore.view = 'parentDash';
+      else if (this.userRole === 'teacher') AppStore.view = 'teacherDash';
+      else if (this.userRole === 'owner') AppStore.view = 'ownerDash';
+    },
     goSettings() {
       AppStore.view = 'settings';
     },
     roleDashView() {
-      if (this.userRole === 'student') return 'studentDash';
-      if (this.userRole === 'parent') return 'parentDash';
-      if (this.userRole === 'teacher') return 'teacherDash';
-      if (this.userRole === 'owner') return 'ownerDash';
       return 'home';
     },
     isActive(viewName) {
@@ -62,13 +60,13 @@ const AppFooter = {
         </svg>
         <span>المواد</span>
       </button>
-      <button v-if="userRole === 'student'" class="nav-item nav-questions" :class="isActive('exam') ? 'nav-active' : 'nav-inactive'" @click="goExam">
+      <button v-if="userRole === 'student'" class="nav-item nav-questions" :class="isActive('subjects') ? 'nav-active' : 'nav-inactive'" @click="goSubjects">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 5.5a3.5 3.5 0 1 1 0 7"/>
           <path d="M8 13.5v1.5"/>
           <path d="M18 5v10a2 2 0 0 1-2 2H9l-3 3V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2Z"/>
         </svg>
-        <span>اختبار</span>
+        <span>الامتحانات</span>
       </button>
       <button v-if="userRole === 'student'" class="nav-item nav-myexams" :class="isActive('myexams') ? 'nav-active' : 'nav-inactive'" @click="goMyExams">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -77,6 +75,29 @@ const AppFooter = {
           <path d="M9 14l2 2 4-4"/>
         </svg>
         <span>اختباراتي</span>
+      </button>
+      <button v-if="userRole === 'parent'" class="nav-item nav-dash" :class="isActive('parentDash') ? 'nav-active' : 'nav-inactive'" @click="goDash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>المتابعة</span>
+      </button>
+      <button v-if="userRole === 'teacher'" class="nav-item nav-dash" :class="isActive('teacherDash') ? 'nav-active' : 'nav-inactive'" @click="goDash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+        <span>الإدارة</span>
+      </button>
+      <button v-if="userRole === 'owner'" class="nav-item nav-dash" :class="isActive('ownerDash') ? 'nav-active' : 'nav-inactive'" @click="goDash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+        </svg>
+        <span>التحكم</span>
       </button>
       <button class="nav-item nav-settings" :class="isActive('settings') ? 'nav-active' : 'nav-inactive'" @click="goSettings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">

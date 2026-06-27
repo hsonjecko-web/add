@@ -3,6 +3,7 @@ var AppStore = Vue.reactive({
   isLoggedIn: false,
   userRole: null,
   selectedStage: null,
+  selectedSubject: null,
   view: 'login',
 
   login(user) {
@@ -11,14 +12,8 @@ var AppStore = Vue.reactive({
     this.userRole = user.role;
     if (user.role === 'student') {
       this.selectedStage = user.stage;
-      this.view = 'studentDash';
-    } else if (user.role === 'parent') {
-      this.view = 'parentDash';
-    } else if (user.role === 'teacher') {
-      this.view = 'teacherDash';
-    } else if (user.role === 'owner') {
-      this.view = 'ownerDash';
     }
+    this.view = 'home';
     localStorage.setItem('app-user-role', user.role);
     localStorage.setItem('app-user-id', user.id);
   },
@@ -28,6 +23,7 @@ var AppStore = Vue.reactive({
     this.isLoggedIn = false;
     this.userRole = null;
     this.selectedStage = null;
+    this.selectedSubject = null;
     this.view = 'login';
     localStorage.removeItem('app-user-role');
     localStorage.removeItem('app-user-id');
@@ -39,9 +35,15 @@ var AppStore = Vue.reactive({
 
   selectStage(stageId) {
     this.selectedStage = stageId;
+    this.selectedSubject = null;
     if (this.currentUser) {
       this.currentUser.stage = stageId;
     }
+  },
+
+  viewSubject(subject) {
+    this.selectedSubject = subject;
+    this.view = 'studentDash';
   },
 
   getSubjects(stageId) {
@@ -49,7 +51,34 @@ var AppStore = Vue.reactive({
   },
 
   getExam(subjectId) {
-    return window.demoData.exams[subjectId] || null;
+    if (window.demoData.exams[subjectId]) return window.demoData.exams[subjectId];
+    const subjName = this.subjectNameById(subjectId) || subjectId;
+    window.demoData.exams[subjectId] = {
+      id: 'e_' + subjectId,
+      title: 'اختبار ' + subjName,
+      timeLimit: 15,
+      questions: this.generateExamQuestions(subjName)
+    };
+    return window.demoData.exams[subjectId];
+  },
+
+  subjectNameById(subjectId) {
+    for (const sid in window.demoData.subjects) {
+      const found = window.demoData.subjects[sid].find(s => s.id === subjectId);
+      if (found) return found.name;
+    }
+    return null;
+  },
+
+  generateExamQuestions(subjectName) {
+    const questions = [
+      { q: 'ما هي أساسيات ' + subjectName + '؟', options: ['المفاهيم الأساسية', 'النظريات', 'التطبيقات', 'كل ما سبق'], answer: 3 },
+      { q: 'أهم تطبيقات ' + subjectName + ' في الحياة:', options: ['التعليم', 'الصناعة', 'الطب', 'كل ما سبق'], answer: 3 },
+      { q: 'دراسة ' + subjectName + ' تساعد على:', options: ['تنمية المهارات', 'فهم الظواهر', 'حل المشكلات', 'كل ما سبق'], answer: 3 },
+      { q: 'من فروع ' + subjectName + ':', options: ['الفرع الأول', 'الفرع الثاني', 'الفرع الثالث', 'كل ما سبق'], answer: 3 },
+      { q: 'مستوى تقدمك في ' + subjectName + ':', options: ['مبتدئ', 'متوسط', 'متقدم', 'يحدد بعد الدراسة'], answer: 3 }
+    ];
+    return questions;
   },
 
   getStudentByUserId(userId) {

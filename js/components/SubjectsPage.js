@@ -12,7 +12,7 @@ const SubjectsPage = {
     subjects() {
       if (this.isStudent) {
         return AppStore.getSubjects(AppStore.selectedStage).map(s => ({
-          name: s.name,
+          ...s,
           description: s.chapters?.length + ' فصول دراسية',
           tag: this.stageLabel,
           lessons: s.chapters?.length + ' فصل',
@@ -49,6 +49,13 @@ const SubjectsPage = {
       ];
     }
   },
+  methods: {
+    openSubject(subj) {
+      if (this.isStudent) {
+        AppStore.viewSubject(subj);
+      }
+    }
+  },
   template: `
     <section class="subjects-page">
       <div class="subjects-intro">
@@ -57,7 +64,7 @@ const SubjectsPage = {
         <p>استكشف المواد المتاحة حسب مرحلتك الدراسية</p>
       </div>
       <div class="subjects-grid">
-        <article v-for="subject in subjects" :key="subject.name" class="subject-card" :style="{ background: subject.accent }">
+        <article v-for="subject in subjects" :key="subject.name" class="subject-card" :style="{ background: subject.accent }" @click="openSubject(subject)">
           <img v-if="subject.image" class="subject-image" :src="subject.image" :alt="subject.name" />
           <div class="subject-content">
             <span class="subject-tag" :style="{ background: subject.accent }">{{ subject.tag }}</span>

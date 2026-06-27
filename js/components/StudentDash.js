@@ -2,7 +2,6 @@ const StudentDash = {
   data() {
     return {
       subjects: [],
-      selectedSubject: null,
       currentExam: null,
       examAnswers: [],
       examScore: null,
@@ -32,6 +31,9 @@ const StudentDash = {
     },
     isSubscribed() {
       return AppStore.currentUser && AppStore.currentUser.isSubscribed;
+    },
+    selectedSubject() {
+      return AppStore.selectedSubject;
     }
   },
   watch: {
@@ -42,17 +44,31 @@ const StudentDash = {
   methods: {
     loadSubjects() {
       this.subjects = this.stageSubjects;
-      this.selectedSubject = null;
+      if (!AppStore.selectedSubject) {
+        this.currentExam = null;
+        this.examSubmitted = false;
+        this.examScore = null;
+      }
+    },
+    leaveSubject() {
+      AppStore.selectedSubject = null;
       this.currentExam = null;
       this.examSubmitted = false;
       this.examScore = null;
     },
     selectSubject(subj) {
-      this.selectedSubject = subj;
+      AppStore.selectedSubject = subj;
       this.currentExam = null;
       this.examSubmitted = false;
       this.examScore = null;
-      this.activeTab = 'exam';
+      this.activeTab = 'subjects';
+    },
+    backToSubjectsList() {
+      if (this.examTimer) clearInterval(this.examTimer);
+      AppStore.selectedSubject = null;
+      this.currentExam = null;
+      this.examSubmitted = false;
+      this.examScore = null;
     },
     startExam() {
       const exam = AppStore.getExam(this.selectedSubject.id);
@@ -97,19 +113,6 @@ const StudentDash = {
       this.examSubmitted = true;
       AppStore.markTrialDone(this.selectedSubject.id);
     },
-    backToSubjects() {
-      this.selectedSubject = null;
-      this.currentExam = null;
-      this.examSubmitted = false;
-      this.examScore = null;
-      if (this.examTimer) clearInterval(this.examTimer);
-    },
-    stageSubjectsCount(stageId) {
-      return (AppStore.getSubjects(stageId) || []).length;
-    },
-    changeStage(stageId) {
-      AppStore.selectStage(stageId);
-    },
     subscribeNow() {
       const result = AppStore.subscribe(this.subCode);
       this.subMessage = result.message;
@@ -122,6 +125,9 @@ const StudentDash = {
       this.showSubscribe = false;
       this.subCode = '';
       this.subMessage = '';
+    },
+    changeStage(stageId) {
+      AppStore.selectStage(stageId);
     }
   },
   mounted() {
@@ -135,23 +141,19 @@ const StudentDash = {
           <h2>مرحباً، {{ currentUser?.name }}</h2>
           <span class="dash-stage">{{ stageLabel }}</span>
         </div>
-        <div class="dash-stage-select">
-          <select v-model="AppStore.selectedStage" @change="changeStage(AppStore.selectedStage)" class="stage-picker">
-            <option v-for="s in allStages" :key="s.id" :value="s.id">{{ s.label }}</option>
-          </select>
-        </div>
       </div>
 
-      <div v-if="!isSubscribed" class="dash-sub-banner" @click="showSubscribe = true">
+      <div v-if="!isSubscribed && !selectedSubject" class="dash-sub-banner" @click="showSubscribe = true">
         <span>اشترك الآن للحصول على المحتوى الكامل - الكود: 002200</span>
       </div>
 
-      <div class="dash-tabs">
-        <button :class="['dash-tab', { active: activeTab === 'subjects' }]" @click="activeTab = 'subjects'; backToSubjects()">المواد</button>
+      <div class="dash-tabs" v-if="!selectedSubject">
+        <button :class="['dash-tab', { active: activeTab === 'subjects' }]" @click="activeTab = 'subjects'">المواد</button>
         <button :class="['dash-tab', { active: activeTab === 'notifs' }]" @click="activeTab = 'notifs'">الإشعارات</button>
       </div>
 
-      <div v-if="activeTab === 'subjects' && !selectedSubject" class="subjects-grid">
+      <!-- شاشة المواد (عند عدم اختيار مادة) -->
+      <div v-if="!selectedSubject && activeTab === 'subjects'" class="subjects-grid">
         <div v-for="subj in stageSubjects" :key="subj.id" class="dash-subject-card" @click="selectSubject(subj)">
           <div class="dash-subj-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
@@ -161,14 +163,27 @@ const StudentDash = {
             <p>{{ subj.chapters?.length || 0 }} فصول</p>
           </div>
           <div class="dash-subj-arrow">
-            <span v-if="AppStore.canAccessSubject(subj.id)">&#8592;</span>
-            <span v-else class="locked-icon">&#128274;</span>
+            <span>&#8592;</span>
           </div>
         </div>
       </div>
 
-      <div v-if="activeTab === 'subjects' && selectedSubject && !currentExam" class="subject-detail">
-        <button class="back-btn" @click="backToSubjects">&rarr; رجوع للمواد</button>
+      <div v-if="!selectedSubject && activeTab === 'notifs'" class="notifs-list">
+        <div v-for="n in userNotifs" :key="n.id" class="notif-item">
+          <div class="notif-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          </div>
+          <div class="notif-body">
+            <p>{{ n.text }}</p>
+            <span class="notif-date">{{ n.date }}</span>
+          </div>
+        </div>
+        <p v-if="userNotifs.length === 0" class="empty-state">لا توجد إشعارات</p>
+      </div>
+
+      <!-- تفاصيل المادة -->
+      <div v-if="selectedSubject && !currentExam && !examSubmitted" class="subject-detail">
+        <button class="back-btn" @click="backToSubjectsList">&rarr; رجوع</button>
         <h3>{{ selectedSubject.name }}</h3>
         <div class="chapters-list">
           <div v-for="(ch, i) in selectedSubject.chapters" :key="i" class="chapter-item">
@@ -181,7 +196,8 @@ const StudentDash = {
         </button>
       </div>
 
-      <div v-if="activeTab === 'subjects' && currentExam && !examSubmitted" class="exam-view">
+      <!-- الاختبار -->
+      <div v-if="selectedSubject && currentExam && !examSubmitted" class="exam-view">
         <div class="exam-timer">{{ formatTime(examTimeLeft) }}</div>
         <h3>{{ currentExam.title }}</h3>
         <div v-for="(q, qi) in currentExam.questions" :key="qi" class="exam-question">
@@ -196,27 +212,20 @@ const StudentDash = {
         <button class="submit-exam-btn" @click="submitExam" :disabled="examAnswers.some(a => a === null)">تسليم الاختبار</button>
       </div>
 
+      <!-- النتيجة -->
       <div v-if="examSubmitted" class="exam-result">
         <div :class="['result-circle', examScore >= 70 ? 'pass' : 'fail']">
           <span class="result-score">{{ examScore }}%</span>
         </div>
         <p>{{ examScore >= 70 ? 'ممتاز! أداء جيد' : 'حاول مرة أخرى' }}</p>
-        <button class="back-btn" @click="backToSubjects">العودة للمواد</button>
-      </div>
-
-      <div v-if="activeTab === 'notifs'" class="notifs-list">
-        <div v-for="n in userNotifs" :key="n.id" class="notif-item">
-          <div class="notif-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
-          </div>
-          <div class="notif-body">
-            <p>{{ n.text }}</p>
-            <span class="notif-date">{{ n.date }}</span>
-          </div>
+        <div v-if="!isSubscribed" class="trial-over-msg">
+          <p>لقد استنفذت المحاولة التجريبية. اشترك الآن للوصول إلى جميع المواد والاختبارات.</p>
+          <button class="start-exam-btn" @click="showSubscribe = true">اشترك الآن (الكود: 002200)</button>
         </div>
-        <p v-if="userNotifs.length === 0" class="empty-state">لا توجد إشعارات</p>
+        <button class="back-btn" @click="backToSubjectsList">العودة للمواد</button>
       </div>
 
+      <!-- مودال الاشتراك -->
       <div v-if="showSubscribe" class="modal-overlay" @click.self="closeSubscribe">
         <div class="modal-box">
           <h3>تفعيل الاشتراك</h3>

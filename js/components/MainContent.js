@@ -47,22 +47,46 @@ const MainContent = {
       teacherInterval: null
     };
   },
+  computed: {
+    isStudent() { return AppStore.userRole === 'student'; },
+    stageSubjects() { return AppStore.getSubjects(AppStore.selectedStage); },
+    stageLabel() { return AppStore.getStageLabel(AppStore.selectedStage); },
+    examExists() { return (id) => !!AppStore.getExam(id); }
+  },
+  methods: {
+    openSubject(subj) {
+      AppStore.viewSubject(subj);
+    },
+    subjectIcon(name) {
+      const icons = {
+        'اللغة العربية': '&#1571;&#1569;',
+        'الرياضيات': '&#1585;&#1610;&#1575;&#1590;',
+        'الإنكليزي': 'EN',
+        'العلوم': '&#1593;&#1604;&#1608;&#1605;',
+        'الاجتماعيات': '&#1575;&#1580;&#1578;&#1605;&#1575;&#1593;',
+        'الفيزياء': '&#1601;&#1610;&#1586;&#1610;&#1575;&#1569;',
+        'الكيمياء': '&#1603;&#1610;&#1605;&#1610;&#1575;&#1569;',
+        'الأحياء': '&#1571;&#1581;&#1610;&#1575;&#1569;',
+        'التاريخ': '&#1578;&#1575;&#1585;&#1610;&#1582;',
+        'الجغرافية': '&#1580;&#1594;&#1585;&#1575;&#1601;&#1610;&#1575;',
+        'الفرنسي': 'FR',
+        'الحاسوب': '&#1581;&#1575;&#1587;&#1608;&#1576;',
+        'الاختصاص': '&#1575;&#1582;&#1578;&#1589;&#1575;&#1589;'
+      };
+      return icons[name] || name.substring(0, 2);
+    }
+  },
   mounted() {
     this.slideInterval = setInterval(() => {
       this.activeSlide = (this.activeSlide + 1) % this.slides.length;
     }, 3000);
-
     this.teacherInterval = setInterval(() => {
       this.activeTeacher = (this.activeTeacher + 1) % this.teachers.length;
     }, 3000);
   },
   beforeUnmount() {
-    if (this.slideInterval) {
-      clearInterval(this.slideInterval);
-    }
-    if (this.teacherInterval) {
-      clearInterval(this.teacherInterval);
-    }
+    if (this.slideInterval) clearInterval(this.slideInterval);
+    if (this.teacherInterval) clearInterval(this.teacherInterval);
   },
   template: `
     <div class="main-content">
@@ -86,6 +110,27 @@ const MainContent = {
             <span>انطلاق دورة جديدة في الفيزياء •</span>
             <span>مباراة تعليمية جديدة للطلاب •</span>
             <span>تحديث جديد في المنصة</span>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="isStudent" class="subjects-section">
+        <div class="subjects-header">
+          <h2>موادي الدراسية</h2>
+          <span class="stage-badge">{{ stageLabel }}</span>
+        </div>
+        <div class="home-subjects-grid">
+          <div v-for="subj in stageSubjects" :key="subj.id" class="home-subject-card" @click="openSubject(subj)">
+            <div class="hs-icon">
+              <span v-html="subjectIcon(subj.name)" style="font-size:1.2rem;font-weight:700"></span>
+            </div>
+            <div class="hs-info">
+              <h4>{{ subj.name }}</h4>
+              <p>{{ subj.chapters?.length || 0 }} فصول</p>
+            </div>
+            <div class="hs-arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </div>
           </div>
         </div>
       </section>

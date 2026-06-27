@@ -56,6 +56,14 @@ window.demoData = {
       { id: 's4_bio', name: 'الأحياء', icon: 'heart', chapters: ['الخلية', 'الوراثة', 'التصنيف'] },
       { id: 's4_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Grammar', 'Reading', 'Essay'] }
     ],
+    sec_sci_5: [
+      { id: 's5_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'الأدب', 'البلاغة', 'النصوص'] },
+      { id: 's5_math', name: 'الرياضيات', icon: 'calc', chapters: ['التفاضل', 'التكامل', 'المتجهات'] },
+      { id: 's5_ph', name: 'الفيزياء', icon: 'zap', chapters: ['الكهرباء', 'المغناطيسية', 'البصريات'] },
+      { id: 's5_ch', name: 'الكيمياء', icon: 'flask', chapters: ['العضوية', 'الحرارية', 'التوازن'] },
+      { id: 's5_bio', name: 'الأحياء', icon: 'heart', chapters: ['الخلية', 'الوراثة', 'التنوع'] },
+      { id: 's5_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Grammar', 'Reading', 'Composition'] }
+    ],
     sec_sci_6: [
       { id: 's6_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'الأدب', 'البلاغة'] },
       { id: 's6_math', name: 'الرياضيات', icon: 'calc', chapters: ['التفاضل', 'التكامل', 'الأعداد المركبة'] },
@@ -64,6 +72,13 @@ window.demoData = {
       { id: 's6_bio', name: 'الأحياء', icon: 'heart', chapters: ['الوراثة', 'التطور', 'البيئة'] },
       { id: 's6_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Grammar', 'Composition', 'Literature'] }
     ],
+    sec_lit_4: [
+      { id: 'l4_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'الأدب', 'البلاغة', 'النصوص'] },
+      { id: 'l4_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Grammar', 'Reading', 'Vocabulary'] },
+      { id: 'l4_fr', name: 'الفرنسي', icon: 'globe', chapters: ['Grammaire', 'Lecture', 'Vocabulaire'] },
+      { id: 'l4_his', name: 'التاريخ', icon: 'book-open', chapters: ['القديم', 'الإسلامي', 'الحديث'] },
+      { id: 'l4_geo', name: 'الجغرافية', icon: 'map', chapters: ['الطبيعية', 'البشرية', 'الاقتصادية'] }
+    ],
     sec_lit_5: [
       { id: 'l5_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'الأدب', 'البلاغة', 'النصوص'] },
       { id: 'l5_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Grammar', 'Reading', 'Translation'] },
@@ -71,11 +86,30 @@ window.demoData = {
       { id: 'l5_his', name: 'التاريخ', icon: 'book-open', chapters: ['القديم', 'الإسلامي', 'الحديث'] },
       { id: 'l5_geo', name: 'الجغرافية', icon: 'map', chapters: ['الطبيعية', 'البشرية', 'الاقتصادية'] }
     ],
+    sec_lit_6: [
+      { id: 'l6_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'الأدب', 'البلاغة', 'النقد'] },
+      { id: 'l6_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Grammar', 'Translation', 'Literature'] },
+      { id: 'l6_fr', name: 'الفرنسي', icon: 'globe', chapters: ['Grammaire', 'Lecture', 'Civilisation'] },
+      { id: 'l6_his', name: 'التاريخ', icon: 'book-open', chapters: ['القديم', 'الإسلامي', 'الحديث', 'المعاصر'] },
+      { id: 'l6_geo', name: 'الجغرافية', icon: 'map', chapters: ['الطبيعية', 'البشرية', 'الاقتصادية', 'الجيوسياسية'] }
+    ],
     voc_1: [
       { id: 'v1_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'المطالعة'] },
       { id: 'v1_math', name: 'الرياضيات', icon: 'calc', chapters: ['الأساسيات', 'التطبيقات'] },
       { id: 'v1_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Technical English', 'Basics'] },
       { id: 'v1_spec', name: 'الاختصاص', icon: 'tool', chapters: ['نظري', 'عملي', 'ورشة'] }
+    ],
+    voc_2: [
+      { id: 'v2_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'المطالعة', 'التعبير'] },
+      { id: 'v2_math', name: 'الرياضيات', icon: 'calc', chapters: ['التفاضل', 'التكامل', 'التطبيقات'] },
+      { id: 'v2_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Technical English', 'Communication'] },
+      { id: 'v2_spec', name: 'الاختصاص', icon: 'tool', chapters: ['نظري', 'عملي', 'مشروع'] }
+    ],
+    voc_3: [
+      { id: 'v3_ar', name: 'اللغة العربية', icon: 'book', chapters: ['النحو', 'البلاغة', 'النصوص'] },
+      { id: 'v3_math', name: 'الرياضيات', icon: 'calc', chapters: ['التفاضل', 'التكامل', 'الإحصاء'] },
+      { id: 'v3_en', name: 'الإنكليزي', icon: 'globe', chapters: ['Technical English', 'Professional'] },
+      { id: 'v3_spec', name: 'الاختصاص', icon: 'tool', chapters: ['نظري', 'عملي', 'تطبيقي'] }
     ]
   },
 
