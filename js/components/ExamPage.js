@@ -106,6 +106,11 @@ const ExamPage = {
       ]
     };
   },
+  created() {
+    if (AppStore.userRole === 'student') {
+      AppStore.view = 'studentDash';
+    }
+  },
   computed: {
     selectedSubject() {
       return this.selectedSubjectId ? this.subjects.find(subject => subject.id === this.selectedSubjectId) : null;

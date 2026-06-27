@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Elite Educational Platform - Mobile UI</title>
+  <title>منصة عراق تكنو التعليمية</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -13,18 +13,33 @@
 <body>
   <main id="app" class="app-container">
     <app-header></app-header>
+    <login-page></login-page>
+    <student-dash></student-dash>
+    <parent-dash></parent-dash>
+    <teacher-dash></teacher-dash>
+    <owner-dash></owner-dash>
     <main-content></main-content>
+    <subjects-page></subjects-page>
+    <exam-page></exam-page>
+    <my-exams-page></my-exams-page>
+    <settings-page></settings-page>
     <app-footer></app-footer>
   </main>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="js/data/demoData.js"></script>
+  <script src="js/data/store.js"></script>
   <script src="js/components/AppHeader.js"></script>
   <script src="js/components/MainContent.js"></script>
   <script src="js/components/SubjectsPage.js"></script>
   <script src="js/components/ExamPage.js"></script>
   <script src="js/components/MyExamsPage.js"></script>
   <script src="js/components/SettingsPage.js"></script>
+  <script src="js/components/LoginPage.js"></script>
+  <script src="js/components/StudentDash.js"></script>
+  <script src="js/components/ParentDash.js"></script>
+  <script src="js/components/TeacherDash.js"></script>
+  <script src="js/components/OwnerDash.js"></script>
   <script src="js/components/AppFooter.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
-

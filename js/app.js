@@ -1,37 +1,56 @@
 const app = Vue.createApp({
   data() {
-    return {
-      currentView: 'home'
-    };
+    return {};
+  },
+  computed: {
+    store() {
+      return AppStore;
+    },
+    currentView() {
+      return this.store.view;
+    },
+    isLoggedIn() {
+      return this.store.isLoggedIn;
+    }
   },
   methods: {
-    showHome() {
-      this.currentView = 'home';
-    },
-    showSubjects() {
-      this.currentView = 'subjects';
-    },
-    showExam() {
-      this.currentView = 'exam';
-    },
-    showMyExams() {
-      this.currentView = 'myexams';
-    },
-    showSettings() {
-      this.currentView = 'settings';
+    showHome() { AppStore.view = 'home'; },
+    showSubjects() { AppStore.view = 'subjects'; },
+    showExam() { AppStore.view = 'exam'; },
+    showMyExams() { AppStore.view = 'myexams'; },
+    showSettings() { AppStore.view = 'settings'; },
+    goBack() {
+      if (this.isLoggedIn) {
+        if (this.store.userRole === 'student') AppStore.view = 'studentDash';
+        else if (this.store.userRole === 'parent') AppStore.view = 'parentDash';
+        else if (this.store.userRole === 'teacher') AppStore.view = 'teacherDash';
+        else if (this.store.userRole === 'owner') AppStore.view = 'ownerDash';
+      }
     }
   },
   template: `
     <div>
       <app-header></app-header>
-      <main-content v-if="currentView === 'home'"></main-content>
+      <login-page v-if="!isLoggedIn"></login-page>
+      <student-dash v-else-if="currentView === 'studentDash'"></student-dash>
+      <parent-dash v-else-if="currentView === 'parentDash'"></parent-dash>
+      <teacher-dash v-else-if="currentView === 'teacherDash'"></teacher-dash>
+      <owner-dash v-else-if="currentView === 'ownerDash'"></owner-dash>
+      <main-content v-else-if="currentView === 'home'"></main-content>
       <subjects-page v-else-if="currentView === 'subjects'"></subjects-page>
       <exam-page v-else-if="currentView === 'exam'"></exam-page>
       <my-exams-page v-else-if="currentView === 'myexams'"></my-exams-page>
       <settings-page v-else-if="currentView === 'settings'"></settings-page>
-      <app-footer :current-view="currentView" @show-home="showHome" @show-subjects="showSubjects" @show-exam="showExam" @show-myexams="showMyExams" @show-settings="showSettings"></app-footer>
+      <app-footer></app-footer>
     </div>
   `
+});
+
+app.mixin({
+  computed: {
+    AppStore() { return window.AppStore; },
+    demoData() { return window.demoData; }
+  }
 });
 
 app.component('app-header', AppHeader);
@@ -41,6 +60,11 @@ app.component('exam-page', ExamPage);
 app.component('my-exams-page', MyExamsPage);
 app.component('settings-page', SettingsPage);
 app.component('app-footer', AppFooter);
+app.component('login-page', LoginPage);
+app.component('student-dash', StudentDash);
+app.component('parent-dash', ParentDash);
+app.component('teacher-dash', TeacherDash);
+app.component('owner-dash', OwnerDash);
 
 // استعادة الإعدادات المحفوظة
 const savedTheme = localStorage.getItem('app-theme') || 'light';
